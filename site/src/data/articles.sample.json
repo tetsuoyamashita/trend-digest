@@ -5,8 +5,8 @@
     "url": "https://example.com/openai-gpt6",
     "summary_ja": "OpenAI が次世代モデル GPT-6 を発表。推論ベンチマークで前世代比 +30%、context window は 2M tokens に拡大。エンタープライズ採用が加速する見込み。",
     "categories": ["AI/ML"],
-    "priority": "high",
     "source_media": "openai.com",
+    "source_feed": "OpenAI Blog",
     "source_lang": "en",
     "fetched_date": "2026-05-08"
   },
@@ -16,8 +16,8 @@
     "url": "https://example.com/boj-rate-hike",
     "summary_ja": "日銀が政策金利を 0.5% へ引き上げ。円高進行で日経平均は終値 -1.8%。海外勢の動向に注目。",
     "categories": ["投資・マーケット", "政策・規制"],
-    "priority": "high",
     "source_media": "bloomberg.com",
+    "source_feed": "Bloomberg Markets",
     "source_lang": "en",
     "fetched_date": "2026-05-08"
   },
@@ -27,8 +27,8 @@
     "url": "https://example.com/su-funding",
     "summary_ja": "Crunchbase 集計では Q2 米国 SU 調達額が前期比 -12%。AI エージェント領域は依然 ホット、消費者向け SaaS は伸び悩み。",
     "categories": ["SU・VC"],
-    "priority": "mid",
     "source_media": "news.crunchbase.com",
+    "source_feed": "Crunchbase News",
     "source_lang": "en",
     "fetched_date": "2026-05-08"
   }

@@ -221,12 +221,13 @@ JSON parse 失敗時: 1 回 retry、それでも失敗なら `processing_status=
 
 URL を知る第三者のアクセスは許容（個人の関心領域・閲覧傾向が漏洩しても割り切る前提）。memo のみは Notion 内に閉じる。
 
-### 3.5 通知層: Slack
+### 3.5 通知層: Slack（v0.2.3 簡素化）
 
-- channel: 既存 `#ai-digest`（v0.3 で `#trend-digest` 移行検討）
+- channel: 既存 `#ai-digest`
 - trigger: n8n WF 完了直後（Notion insert 後、build trigger と並列）
-- 内容: 当日 `priority=high` の記事を上位 5-10 件、各 1 行（タイトル + カテゴリ tag + 原文 URL）+ 末尾に dashboard URL
-- フォーマット: Slack Block Kit
+- **内容（v0.2.3）: dashboard URL + 新着件数のみ**（例: `📡 新着 87 件 → https://tetsuoyamashita.github.io/trend-digest/`）
+- 山下は Slack 上で内容確認せず、URL クリックで dashboard に飛んで HTML 上で閲覧
+- v0.2 の「⭐ 高 上位 5-10 件 + Block Kit」は撤回（優先度撤廃に伴う）
 - 0 件時: 「本日 ⭐ 高 該当なし」 + dashboard URL
 - partial failure 時: 「処理 N 件中 X 件失敗、{失敗カテゴリ}」を文面追加
 

@@ -41,8 +41,7 @@ CATEGORY_DISPLAY = {
     'invest': '投資・マーケット', 'policy': '政策・規制', 'geopolitics': '地政学',
     'consumer': '消費者', 'academia': 'アカデミア',
 }
-PRIORITY_DISPLAY = {'high': '⭐ 高', 'mid': '◯ 中', 'low': '─ 低'}
-PROMPT_VERSION = 'v0.2.2'
+PROMPT_VERSION = 'v0.2.3'
 DEFAULT_MODEL = 'gpt-5.5'
 NOTION_RPS = 3
 NOTION_BATCH = 10
@@ -139,15 +138,9 @@ def llm_classify_summarize(record: dict, model: str, api_key: str) -> dict:
         f'\nReturn JSON with this exact shape:\n'
         '{\n'
         '  "categories": ["ai_ml" | "tech" | "mgmt" | "startup_vc" | "invest" | "policy" | "geopolitics" | "consumer" | "academia", ...],  // 1-3 items\n'
-        '  "priority": "high" | "mid" | "low",\n'
-        '  "summary_ja": "200-400 字の日本語要約",\n'
-        '  "source_lang": "ja" | "en" | "other",\n'
-        '  "priority_reason": "1 文の判定根拠"\n'
+        '  "summary_ja": "200-400 字の日本語要約 (経営コンサル/SaaS 経営者の戦略判断に使える視点を含める)",\n'
+        '  "source_lang": "ja" | "en" | "other"\n'
         '}\n'
-        '優先度:\n'
-        '- high: 業界・経営・戦略への直接的影響、または山下の関心領域に強くマッチ\n'
-        '- mid: 注目だがアクション不要、知識補強レベル\n'
-        '- low: 参考、深堀り価値低\n'
     )
     return call_openai([{'role': 'system', 'content': system}, {'role': 'user', 'content': user}], model, api_key)
 
@@ -207,13 +200,9 @@ def insert_notion_article(notion_token: str, db_id: str, record: dict, classific
     if not cat_displays:
         cat_displays = [{'name': 'AI/ML'}]  # fallback
 
-    pri_id = classification.get('priority', 'low')
-    pri_display = PRIORITY_DISPLAY.get(pri_id, '─ 低')
-
     properties = {
         'タイトル': {'title': [{'text': {'content': title[:200]}}]},
         'URL': {'url': url or None},
-        'Canonical URL': {'url': canonical or None},
         'dedup_key': {'rich_text': [{'text': {'content': dedup_key}}]},
         'カテゴリ': {'multi_select': cat_displays},
         '取得日': {'date': {'start': (record.get('created_at') or datetime.now(timezone.utc).isoformat())[:10]}},
@@ -222,19 +211,9 @@ def insert_notion_article(notion_token: str, db_id: str, record: dict, classific
         'Source Feed': {'rich_text': [{'text': {'content': record.get('author') or ''}}]},
         '言語': {'select': {'name': classification.get('source_lang', 'other')}},
         '要約': {'rich_text': [{'text': {'content': (classification.get('summary_ja') or '')[:1900]}}]},
-        '優先度': {'select': {'name': pri_display}},
-        'priority_reason': {'rich_text': [{'text': {'content': (classification.get('priority_reason') or '')[:1900]}}]},
-        'ステータス': {'select': {'name': '未読'}},
-        'Readwise ID': {'rich_text': [{'text': {'content': record.get('id') or ''}}]},
         'model_version': {'rich_text': [{'text': {'content': model}}]},
         'prompt_version': {'rich_text': [{'text': {'content': PROMPT_VERSION}}]},
     }
-    if record.get('published_date'):
-        properties['公開日'] = {'date': {'start': record['published_date']}}
-    if record.get('author'):
-        properties['著者'] = {'rich_text': [{'text': {'content': record['author'][:200]}}]}
-    if record.get('word_count'):
-        properties['文字数'] = {'number': record['word_count']}
 
     body = {'parent': {'database_id': db_id}, 'properties': properties}
     req = urllib.request.Request(

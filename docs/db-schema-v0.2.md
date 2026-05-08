@@ -1,9 +1,11 @@
-# 新 DB Schema 設計 v0.2.1
+# 新 DB Schema 設計 v0.2.3
 
-最終更新: 2026-05-08
-ステータス: GO 判定済（v0.2.1 微整合）
+最終更新: 2026-05-09
+ステータス: 実装中（DB 作成 + dry-run 50 件投入 + シンプル化）
 v0.1 → v0.2 主な変更: H4/H5/M2/M6/M7 反映で 14 → 21 properties
-v0.2 → v0.2.1: G1 C で「メモ プロパティを dashboard 出力から除外」明記 / Codex G3 G4 整合（21 props 統一、processing_status の failed_parse 注記）
+v0.2 → v0.2.1: G1 C で「メモ プロパティを dashboard 出力から除外」明記 / Codex G3 G4 整合
+v0.2.1 → v0.2.2: Anthropic を Readwise 経由に統一、24 RSS 単一経路化
+v0.2.2 → v0.2.3: **dry-run 50 件評価後の大幅シンプル化** — 優先度 / priority_reason / ステータス / 文字数 / Readwise ID / 公開日 / Canonical URL / メモ / 著者 を削除し **21 → 12 properties**。HTML 閲覧前提 + Slack 通知簡素化（URL + 件数のみ）に伴い不要 property を削減
 
 ## 概要
 
@@ -15,33 +17,37 @@ v0.2 → v0.2.1: G1 C で「メモ プロパティを dashboard 出力から除�
 
 ---
 
-## DB 1: Trend Digest Articles（21 properties）
+## DB 1: Trend Digest Articles（12 properties、v0.2.3 シンプル化）
 
 ### Schema 一覧
 
 | プロパティ | 型 | 必須 | 用途 |
 |---|---|---|---|
 | `タイトル` | title | ✓ | 記事タイトル（Readwise の `title`）|
-| `URL` | url | ✓ | 原文 URL（`source_url` 優先、なければ `url`）|
-| `Canonical URL` | url | ✓ | 正規化済 URL（scheme=https、UTM 除去、trailing slash 除去）|
-| `dedup_key` | rich_text | ✓ | SHA1(canonical_url + normalized_title) — H5 一次キー |
-| `カテゴリ` | multi_select | ✓ | 9 カテゴリ正規 enum、LLM 分類（複数可）|
-| `公開日` | date | — | `published_date`（無い記事もある）|
-| `取得日` | date | ✓ | `created_at` の日付部分（JST）|
-| `処理日` | date | ✓ | LLM 処理 + Notion insert 完了日時（M7: processed_at）|
-| `ソースメディア` | rich_text | ✓ | host そのまま（select だと選択肢爆発、rich_text 採用）|
-| `Source Feed` | rich_text | ✓ | 取得元 RSS の feed name（M7: source_feed、HN/Adweek/BoF 等）|
-| `著者` | rich_text | — | `author` |
-| `言語` | select | ✓ | 原文言語: `ja` / `en` / `other`（M8: 要約は常に日本語）|
-| `文字数` | number | — | `word_count` |
-| `要約` | rich_text | ✓ | LLM 生成 200-400 字、**常に日本語**（M8）|
-| `優先度` | select | ✓ | `⭐ 高` / `◯ 中` / `─ 低`（LLM 判定）|
-| `priority_reason` | rich_text | ✓ | 優先度判定の根拠 1 文（M2: 観測性）|
-| `ステータス` | select | ✓ | v0.2 簡略化: `未読` / `アクション有` / `アーカイブ`（M6: 既読は v0.3 でクリック追跡実装後）|
-| `Readwise ID` | rich_text | — | Readwise の `id`（外部 ID として保持、dedup ではない）|
-| `model_version` | rich_text | ✓ | LLM model + version（M7: 例 `gpt-5.5-2026-04-23`）|
-| `prompt_version` | rich_text | ✓ | プロンプト version 番号（M7: 例 `v0.2.0`）|
-| `メモ` | rich_text | — | 山下手動入力用（**v0.2.1: dashboard 出力から除外、Notion 内のみ**、G1 C 採用）|
+| `URL` | url | ✓ | 原文 URL（dashboard クリック先、UTM 等は残す）|
+| `dedup_key` | rich_text | ✓ | SHA1(canonical_url + normalized_title)[:16] — 一次キー、再計算可 |
+| `カテゴリ` | multi_select | ✓ | 9 カテゴリ正規 enum、LLM 分類（複数可、1-3 個）|
+| `取得日` | date | ✓ | Readwise `created_at` の日付（dashboard ソート主軸）|
+| `処理日` | date | ✓ | LLM 処理 + Notion insert 完了日時（観測用）|
+| `ソースメディア` | rich_text | ✓ | URL の host 名（"openai.com" 等、dashboard 表示用）|
+| `Source Feed` | rich_text | ✓ | Readwise `author` = どの RSS feed から拾ったか（"Hacker News" 等、観測用）|
+| `言語` | select | ✓ | 原文言語: `ja` / `en` / `other`（要約は常に日本語）|
+| `要約` | rich_text | ✓ | LLM 生成 200-400 字、**常に日本語**、SaaS 経営者観点を含める |
+| `model_version` | rich_text | ✓ | LLM model + version（観測用、例 `gpt-5.5-2026-04-23`）|
+| `prompt_version` | rich_text | ✓ | プロンプト version 番号（観測用、例 `v0.2.3`）|
+
+### v0.2.3 で削除した properties（9 件）
+
+| 削除 | 削除理由 |
+|---|---|
+| 優先度 / priority_reason | LLM 判定の信頼性疑問、HTML 閲覧で不要 |
+| ステータス | 未読/既読/アクション有 は HTML 閲覧運用で意味なし |
+| 文字数 | dashboard でソート/表示なし |
+| Readwise ID | dedup_key で十分、突合場面なし |
+| 公開日 | 取得日 で代替、無い記事多数 |
+| Canonical URL | dedup_key 計算で内部使用、保存不要 |
+| メモ | dashboard 編集動線なし、Notion 内独立管理で代替可能 |
+| 著者 | Readwise `author` は Source Feed と同値で重複 |
 
 ### カテゴリ multi_select（9 値、enum 統一 H4）
 

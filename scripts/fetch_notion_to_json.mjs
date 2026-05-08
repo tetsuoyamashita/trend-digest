@@ -54,19 +54,16 @@ function rich(prop) {
 function pageToArticle(p) {
   const props = p.properties;
   const url = props['URL']?.url || '';
-  const status = props['ステータス']?.select?.name || '未読';
-  if (status === 'アーカイブ') return null;
   return {
     id: p.id,
     title: rich(props['タイトル']),
     url,
     summary_ja: rich(props['要約']),
     categories: (props['カテゴリ']?.multi_select || []).map(s => s.name),
-    priority: ({ '⭐ 高': 'high', '◯ 中': 'mid', '─ 低': 'low' })[props['優先度']?.select?.name] || 'low',
     source_media: rich(props['ソースメディア']),
+    source_feed: rich(props['Source Feed']),
     source_lang: props['言語']?.select?.name || 'other',
     fetched_date: props['取得日']?.date?.start || '',
-    // memo は dashboard 出力から除外（G1 C 採用）
   };
 }
 
