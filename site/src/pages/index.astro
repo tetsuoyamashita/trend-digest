@@ -1,53 +1,328 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ArticleCard from '../components/ArticleCard.astro';
 import articlesData from '../data/articles.sample.json';
 
-const CATEGORIES = [
-  { id: 'all', label: '全カテゴリ' },
-  { id: 'AI/ML', label: 'AI/ML' },
-  { id: 'テック', label: 'テック' },
-  { id: '経営・戦略', label: '経営・戦略' },
-  { id: 'SU・VC', label: 'SU・VC' },
-  { id: '投資・マーケット', label: '投資・マーケット' },
-  { id: '政策・規制', label: '政策・規制' },
-  { id: '地政学', label: '地政学' },
-  { id: '消費者', label: '消費者' },
-  { id: 'アカデミア', label: 'アカデミア' },
+interface Article {
+  id: string;
+  title: string;
+  url: string;
+  summary_ja: string;
+  categories: string[];
+  source_media: string;
+  source_feed?: string;
+  source_lang: string;
+  fetched_date: string;
+}
+
+const CATEGORIES = ['AI/ML', 'テック', '経営・戦略', 'SU・VC', '投資・マーケット', '政策・規制', '地政学', '消費者', 'アカデミア'];
+const PERIODS = [
+  { id: 'today', label: '今日' },
+  { id: '3d',    label: '3日' },
+  { id: '7d',    label: '7日' },
+  { id: '30d',   label: '30日' },
 ];
 
-const activeCategory = Astro.url.searchParams.get('category') ?? 'all';
-const articles = (articlesData as any[]).filter(
-  a => activeCategory === 'all' || a.categories.includes(activeCategory),
-);
+const articles: Article[] = (articlesData as Article[])
+  .slice()
+  .sort((a, b) => (b.fetched_date || '').localeCompare(a.fetched_date || ''));
+
+const totalAll = articles.length;
+function countCategory(cat: string): number {
+  return articles.filter(a => a.categories.includes(cat)).length;
+}
+const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
+  timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit',
+  hour: '2-digit', minute: '2-digit', hour12: false,
+}).format(new Date());
 ---
-<Layout title={`Trend Digest - ${activeCategory === 'all' ? '全カテゴリ' : activeCategory}`}>
-  <nav class="tabs">
-    {CATEGORIES.map(c => (
-      <a href={`/trend-digest/?category=${encodeURIComponent(c.id)}`} class={c.id === activeCategory ? 'active' : ''}>{c.label}</a>
-    ))}
-  </nav>
-  <div class="controls">
-    <div id="search"></div>
-    <select id="period-filter">
-      <option value="all">全期間</option>
-      <option value="1">今日</option>
-      <option value="7">7日</option>
-      <option value="30">30日</option>
-    </select>
-  </div>
-  <div class="article-list">
-    {articles.length === 0
-      ? <p>記事がありません。新規 fetch を待つか、別カテゴリを選んでください。</p>
-      : articles.map((a: any) => <ArticleCard article={a} />)}
-  </div>
+<Layout title="Trend Digest">
+  <header class="topbar">
+    <div class="topbar-row logo-row">
+      <span class="logo">▲ Trend Digest</span>
+      <span class="meta">updated {buildTimeJST} JST · <span id="visible-count">{totalAll}</span> 件</span>
+    </div>
+    <div class="topbar-row filter-row">
+      <div class="period-pills" role="tablist" aria-label="期間">
+        {PERIODS.map((p, idx) => (
+          <button class={'pill ' + (idx === 0 ? 'active' : '')} data-period={p.id}>
+            [{p.label} <span class="pill-count" data-count-period={p.id}>0</span>]
+          </button>
+        ))}
+      </div>
+      <div id="search" class="search-slot"></div>
+    </div>
+    <div class="topbar-row category-row">
+      <button class="pill cat-pill active" data-category="all">[All <span class="pill-count" data-count-cat="all">{totalAll}</span>]</button>
+      {CATEGORIES.map(c => (
+        <button class={'pill cat-pill cat-' + c} data-category={c}>
+          [{c} <span class="pill-count" data-count-cat={c}>{countCategory(c)}</span>]
+        </button>
+      ))}
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="list" id="list">
+      {articles.map((a, i) => (
+        <div
+          class="row"
+          data-id={a.id}
+          data-title={a.title}
+          data-url={a.url}
+          data-summary={a.summary_ja}
+          data-categories={a.categories.join(',')}
+          data-source-media={a.source_media}
+          data-source-feed={a.source_feed ?? ''}
+          data-source-lang={a.source_lang ?? 'other'}
+          data-fetched-date={a.fetched_date ?? ''}
+          data-pagefind-body
+        >
+          <span class="col-num">[{String(i + 1).padStart(3, '0')}]</span>
+          <span class="col-sep">│</span>
+          <span class="col-summary">{a.summary_ja}</span>
+          <span class="col-cats">
+            {a.categories.map(c => (
+              <span class={'cat-tag cat-' + c}>{c}</span>
+            ))}
+          </span>
+        </div>
+      ))}
+    </section>
+    <aside class="panel" id="panel" aria-live="polite">
+      <div class="panel-inner">
+        <h1 class="panel-title" id="p-title">記事を選択してください</h1>
+        <div class="panel-meta" id="p-meta">
+          <span id="p-source-media">—</span>
+          <span class="dot">·</span>
+          <span id="p-source-feed">—</span>
+          <span class="dot">·</span>
+          <span id="p-fetched-date">—</span>
+          <span class="dot">·</span>
+          <span id="p-lang">—</span>
+          <span class="dot">·</span>
+          <span id="p-cats" class="panel-cats"></span>
+        </div>
+        <hr class="panel-divider" />
+        <div class="panel-summary" id="p-summary">左のリストから記事を選択すると、ここに詳細要約が表示されます。</div>
+        <a class="panel-link" id="p-link" href="#" target="_blank" rel="noopener">原文を読む →</a>
+      </div>
+    </aside>
+  </main>
+
   <script src="/trend-digest/pagefind/pagefind-ui.js" is:inline onerror="this.remove()"></script>
   <script is:inline>
     document.addEventListener('DOMContentLoaded', () => {
-      const target = document.getElementById('search');
-      if (target && window.PagefindUI) {
-        new window.PagefindUI({ element: '#search', showSubResults: false });
+      try {
+        if (window.PagefindUI) {
+          new window.PagefindUI({ element: '#search', showSubResults: false, resetStyles: false });
+        }
+      } catch (e) {}
+
+      let activePeriod = 'today';
+      let activeCategory = 'all';
+      const rows = Array.from(document.querySelectorAll('.row'));
+
+      function todayJST() {
+        const now = new Date();
+        const tz = new Date(now.getTime() + 9 * 3600 * 1000);
+        return tz.toISOString().slice(0, 10);
       }
+      const TODAY = todayJST();
+
+      function inPeriod(fetchedDate, periodId) {
+        if (!fetchedDate) return false;
+        if (periodId === 'today') return fetchedDate === TODAY;
+        const days = { '3d': 3, '7d': 7, '30d': 30 }[periodId];
+        if (!days) return true;
+        const d0 = new Date(TODAY + 'T00:00:00Z').getTime();
+        const d1 = new Date(fetchedDate + 'T00:00:00Z').getTime();
+        const diff = (d0 - d1) / (24 * 3600 * 1000);
+        return diff >= 0 && diff < days;
+      }
+
+      function applyFilter() {
+        let visible = 0;
+        const catCounts = { all: 0 };
+        const perCounts = { today: 0, '3d': 0, '7d': 0, '30d': 0 };
+        rows.forEach(r => {
+          const fd = r.getAttribute('data-fetched-date') || '';
+          const cats = (r.getAttribute('data-categories') || '').split(',').filter(Boolean);
+          for (const p of ['today', '3d', '7d', '30d']) if (inPeriod(fd, p)) perCounts[p]++;
+          const periodOK = inPeriod(fd, activePeriod);
+          const catOK = activeCategory === 'all' || cats.includes(activeCategory);
+          const show = periodOK && catOK;
+          r.style.display = show ? '' : 'none';
+          if (show) visible++;
+          if (periodOK) {
+            catCounts.all++;
+            cats.forEach(c => { catCounts[c] = (catCounts[c] || 0) + 1; });
+          }
+        });
+        document.getElementById('visible-count').textContent = String(visible);
+        document.querySelectorAll('[data-count-period]').forEach(el => {
+          const k = el.getAttribute('data-count-period');
+          el.textContent = String(perCounts[k] || 0);
+        });
+        document.querySelectorAll('[data-count-cat]').forEach(el => {
+          const k = el.getAttribute('data-count-cat');
+          el.textContent = String(catCounts[k] || 0);
+        });
+      }
+
+      document.querySelectorAll('[data-period]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-period]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activePeriod = btn.getAttribute('data-period');
+          applyFilter();
+        });
+      });
+
+      document.querySelectorAll('[data-category]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-category]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeCategory = btn.getAttribute('data-category');
+          applyFilter();
+        });
+      });
+
+      function selectRow(row) {
+        rows.forEach(r => r.classList.remove('selected'));
+        row.classList.add('selected');
+        const get = k => row.getAttribute('data-' + k) || '';
+        document.getElementById('p-title').textContent = get('title') || '(no title)';
+        document.getElementById('p-source-media').textContent = get('source-media') || '—';
+        document.getElementById('p-source-feed').textContent = get('source-feed') || '—';
+        document.getElementById('p-fetched-date').textContent = get('fetched-date') || '—';
+        document.getElementById('p-lang').textContent = '[' + (get('source-lang') || 'other') + ']';
+        const catsEl = document.getElementById('p-cats');
+        catsEl.innerHTML = '';
+        (get('categories') || '').split(',').filter(Boolean).forEach(c => {
+          const span = document.createElement('span');
+          span.className = 'cat-tag cat-' + c;
+          span.textContent = c;
+          catsEl.appendChild(span);
+        });
+        document.getElementById('p-summary').textContent = get('summary') || '(no summary)';
+        const link = document.getElementById('p-link');
+        link.href = get('url') || '#';
+      }
+
+      rows.forEach(r => r.addEventListener('click', () => selectRow(r)));
+
+      applyFilter();
+      const firstVisible = rows.find(r => r.style.display !== 'none');
+      if (firstVisible) selectRow(firstVisible);
+      else if (rows[0]) selectRow(rows[0]);
+
+      document.addEventListener('keydown', e => {
+        if (e.target instanceof HTMLInputElement) return;
+        const visible = rows.filter(r => r.style.display !== 'none');
+        if (!visible.length) return;
+        const cur = visible.findIndex(r => r.classList.contains('selected'));
+        let next = cur;
+        if (e.key === 'ArrowDown' || e.key === 'j') next = Math.min(visible.length - 1, cur + 1);
+        else if (e.key === 'ArrowUp' || e.key === 'k') next = Math.max(0, cur - 1);
+        else return;
+        e.preventDefault();
+        if (next !== cur && visible[next]) {
+          selectRow(visible[next]);
+          visible[next].scrollIntoView({ block: 'nearest' });
+        }
+      });
     });
   </script>
+
+  <style>
+    .topbar {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 16px;
+    }
+    .topbar-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-height: 30px; }
+    .topbar-row + .topbar-row { margin-top: 4px; }
+    .logo { font-weight: 700; color: var(--fg-strong); font-size: 16px; letter-spacing: 0.5px; }
+    .meta { color: var(--fg-muted); margin-left: auto; font-size: 12px; }
+    .pill {
+      background: transparent; border: none; padding: 2px 6px; color: var(--fg-muted);
+      font-family: var(--font-mono); font-size: var(--font-size); cursor: pointer; line-height: 1.4;
+      border-radius: 0;
+    }
+    .pill:hover { color: var(--fg); }
+    .pill.active { color: var(--fg-strong); background: var(--accent-soft); }
+    .pill.cat-pill { padding: 1px 4px; }
+    .pill-count { color: var(--fg-dim); }
+    .pill.active .pill-count { color: var(--fg-muted); }
+    .search-slot { margin-left: auto; min-width: 220px; }
+    .search-slot .pagefind-ui {
+      --pagefind-ui-primary: var(--accent);
+      --pagefind-ui-text: var(--fg);
+      --pagefind-ui-background: var(--bg-elev);
+      --pagefind-ui-border: var(--border);
+      --pagefind-ui-tag: var(--bg);
+      --pagefind-ui-border-radius: 3px;
+      --pagefind-ui-font: var(--font-mono);
+    }
+    .search-slot .pagefind-ui__search-input { padding: 4px 8px; font-size: var(--font-size); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 540px;
+      height: calc(100vh - 110px);
+      gap: 0;
+    }
+    .list {
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      padding: 4px 0;
+    }
+    .row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 0 12px;
+      height: var(--row-h);
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      white-space: nowrap; overflow: hidden;
+    }
+    .row:hover { background: var(--bg-row-hover); }
+    .row.selected { background: var(--bg-row-selected); border-left-color: var(--accent); }
+    .col-num { color: var(--fg-dim); flex: 0 0 auto; }
+    .col-sep { color: var(--border); flex: 0 0 auto; }
+    .col-summary {
+      flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; color: var(--fg);
+    }
+    .col-cats { flex: 0 0 auto; display: flex; gap: 4px; }
+
+    .panel { background: var(--bg-elev); overflow-y: auto; }
+    .panel-inner { padding: 16px 20px; }
+    .panel-title {
+      margin: 0 0 8px;
+      font-family: var(--font-mono);
+      font-size: var(--font-size);
+      font-weight: 700;
+      color: var(--fg-strong);
+      line-height: 1.5;
+      letter-spacing: 0;
+    }
+    .panel-meta { color: var(--fg-muted); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .panel-meta .dot { color: var(--fg-dim); }
+    .panel-cats { display: inline-flex; gap: 6px; }
+    .panel-divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+    .panel-summary {
+      color: var(--fg);
+      font-family: var(--font-mono);
+      font-size: var(--font-size);
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+    .panel-link {
+      display: inline-block; margin-top: 16px;
+      color: var(--accent);
+      font-family: var(--font-mono); font-size: 12px;
+      text-decoration: none;
+    }
+    .panel-link:hover { text-decoration: underline; }
+  </style>
 </Layout>

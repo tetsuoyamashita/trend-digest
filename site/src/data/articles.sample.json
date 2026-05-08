@@ -1,34 +1,719 @@
 [
   {
-    "id": "sample-001",
-    "title": "OpenAI が GPT-6 を発表、推論性能を 30% 改善",
-    "url": "https://example.com/openai-gpt6",
-    "summary_ja": "OpenAI が次世代モデル GPT-6 を発表。推論ベンチマークで前世代比 +30%、context window は 2M tokens に拡大。エンタープライズ採用が加速する見込み。",
-    "categories": ["AI/ML"],
-    "source_media": "openai.com",
-    "source_feed": "OpenAI Blog",
+    "id": "35a3b641-55ad-814c-b1dc-ed72a6dbf346",
+    "title": "‘There’s a big shift’: Amazon is turning the upfront into a pitch for its ad tech, not just primetime",
+    "url": "https://digiday.com/media-buying/theres-a-big-shift-amazon-is-turning-the-upfront-into-a-pitch-for-its-ad-tech-not-just-primetime/?utm_campaign=digidaydis&utm_medium=rss&utm_source=general-rss",
+    "summary_ja": "Amazonは広告主向け upfront（先行広告販売）で、従来のPrime Video等の番組・コンテンツ訴求に加え、広告配信・測定・ターゲティングなどのアドテク基盤を前面に出す方針へ転換している。プレミアム動画在庫と自社の購買データ、広告プロダクトを一体で提案することで、単なるメディア枠販売から統合広告プラットフォームとしての価値訴求を強める動き。",
+    "categories": [
+      "テック",
+      "経営・戦略",
+      "消費者"
+    ],
+    "source_media": "digiday.com",
+    "source_feed": "Seb Joseph",
     "source_lang": "en",
     "fetched_date": "2026-05-08"
   },
   {
-    "id": "sample-002",
-    "title": "サンプル記事: 日銀が利上げ決定、マーケット反応",
-    "url": "https://example.com/boj-rate-hike",
-    "summary_ja": "日銀が政策金利を 0.5% へ引き上げ。円高進行で日経平均は終値 -1.8%。海外勢の動向に注目。",
-    "categories": ["投資・マーケット", "政策・規制"],
-    "source_media": "bloomberg.com",
+    "id": "35a3b641-55ad-8152-9428-ee8df4cb4e57",
+    "title": "WTF is a unified ad platform?",
+    "url": "https://digiday.com/media-buying/wtf-is-a-unified-ad-platform/?utm_campaign=digidaydis&utm_medium=rss&utm_source=general-rss",
+    "summary_ja": "統合広告プラットフォーム（UAP）は、DSP、SSP、データ管理、計測、最適化など分断されてきた広告テック機能を一つの基盤に集約する動き。広告主や媒体社にとって運用効率やデータ連携の改善が期待される一方、少数の大手プラットフォーマーへの依存や透明性低下の懸念もある。広告売買のバリューチェーン再編を示すトレンドとして注目される。",
+    "categories": [
+      "テック",
+      "経営・戦略"
+    ],
+    "source_media": "digiday.com",
+    "source_feed": "Seb Joseph",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8167-b2e7-f5f8656615f5",
+    "title": "Future of Marketing Briefing: Memes used to be a joke. Now they’re a strategy",
+    "url": "https://digiday.com/marketing/future-of-marketing-briefing-memes-used-to-be-a-joke-now-theyre-a-strategy/?utm_campaign=digidaydis&utm_medium=rss&utm_source=general-rss",
+    "summary_ja": "ミームは単なるネット上の冗談ではなく、ブランド戦略や市場形成に影響するマーケティング資産になりつつある。記事では、予測市場に絡むインサイダー取引容疑の事例も引きながら、ネット文化が金融・消費行動・世論形成にまで波及する現状を整理。マーケターは一過性の流行としてではなく、コミュニティ文脈や拡散力を理解したうえで活用する必要がある。",
+    "categories": [
+      "消費者",
+      "経営・戦略",
+      "テック"
+    ],
+    "source_media": "digiday.com",
+    "source_feed": "Seb Joseph",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81c9-8872-e5688c7d7ad4",
+    "title": "The Trade Desks’ $689m revenue beat is blunted by the departure of CSO Jacobson to OpenAI",
+    "url": "https://digiday.com/media-buying/the-trade-desks-689m-revenue-beat-is-blunted-by-the-departure-of-its-cso-samantha-jacobson-to-openai/?utm_campaign=digidaydis&utm_medium=rss&utm_source=general-rss",
+    "summary_ja": "広告テック大手The Trade Deskは第1四半期に売上6億8900万ドルを計上し、市場予想を上回る成長を示した。一方で、最高戦略責任者のサマンサ・ジェイコブソン氏がOpenAIへ移籍することが明らかになり、好決算の印象をやや弱めた。同社は新ツールや大手ブランドとの提携進展も強調しており、AI時代の広告プラットフォーム競争と幹部人材の流動化が注目点となる。",
+    "categories": [
+      "AI/ML",
+      "テック",
+      "経営・戦略"
+    ],
+    "source_media": "digiday.com",
+    "source_feed": "Ronan Shields",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8178-94d2-f27311e44cf0",
+    "title": "‘Expand thoughtfully’: OpenAI offers ChatGPT ads to new markets including the U.K., Brazil and Japan",
+    "url": "https://digiday.com/media-buying/expand-thoughtfully-openai-offers-chatgpt-ads-to-new-markets-including-the-u-k-brazil-and-japan/?utm_campaign=digidaydis&utm_medium=rss&utm_source=general-rss",
+    "summary_ja": "OpenAIは、ChatGPT内広告の提供地域を英国、ブラジル、日本などへ拡大する。米国ではセルフサーブ型広告マネージャーなど、より高度な広告機能が先行しており、同社は新市場でも段階的に展開する方針。ユーザー体験、プライバシー、利用者側のコントロールを損なわないことを重視しつつ、ChatGPTの収益化手段を広げる動きとして注目される。",
+    "categories": [
+      "AI/ML",
+      "テック",
+      "消費者"
+    ],
+    "source_media": "digiday.com",
+    "source_feed": "Krystal Scanlon",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81e4-95e5-e2b87cab6e3b",
+    "title": "Chris Hohn slashes $8bn Microsoft stake in warning over AI disruption",
+    "url": "https://www.ft.com/content/ac5d90a9-b010-4529-9616-706420920681",
+    "summary_ja": "著名投資家クリス・ホーン氏率いるTCIが、過去10年近く保有してきたMicrosoft株の大半を第1四半期に売却し、約80億ドル規模の持ち分を大幅に縮小した。背景には、生成AIが既存ソフトウェア企業の競争優位や収益構造を揺さぶるとの警戒がある。MicrosoftはAI投資の中心企業だが、巨額投資、競争激化、バリュエーションへの懸念が投資判断に影響したとみられる。",
+    "categories": [
+      "AI/ML",
+      "テック",
+      "投資・マーケット"
+    ],
+    "source_media": "www.ft.com",
+    "source_feed": "World",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-816a-a71b-e14f3538dde7",
+    "title": "US labour market stable in April",
+    "url": "https://www.ft.com/content/2bcaf369-ce39-45f5-9631-35eba1028a49",
+    "summary_ja": "米国の4月雇用統計は、非農業部門雇用者数が健全に増加し、失業率も安定していることを示した。労働市場が大きく崩れていない一方、過熱感も限定的とみられ、FRBが当面利下げを急がず政策金利を据え置く姿勢を維持する材料となる。金利見通しは企業の資金調達環境や株式バリュエーションに影響するため、SaaS企業や投資家にとってはマクロ環境把握の参考情報となる。",
+    "categories": [
+      "投資・マーケット",
+      "政策・規制"
+    ],
+    "source_media": "www.ft.com",
+    "source_feed": "World",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-812f-8045-fe77320db653",
+    "title": "Here Are the Key Takeaways on the US Jobs Report for April",
+    "url": "https://www.bloomberg.com/news/articles/2026-05-08/us-jobs-report-april-2026-key-takeaways-on-employment-payrolls",
+    "summary_ja": "Bloomberg記事は、米国の4月雇用統計で示された主要なポイントを整理している。非農業部門雇用者数、失業率、賃金上昇率、労働参加などの動向を通じて、米労働市場の減速・底堅さを読み解く内容とみられる。市場にとってはFRBの利下げ時期や金利見通し、景気判断に直結する材料であり、SaaS企業の採用・資金調達環境を考える上でもマクロ前提として有用。",
+    "categories": [
+      "投資・マーケット",
+      "政策・規制"
+    ],
+    "source_media": "www.bloomberg.com",
+    "source_feed": "Mark Niquette",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8189-81e6-fd14bf082951",
+    "title": "Why It’s So Hard to Spot a Stock-Market Bubble",
+    "url": "https://www.wsj.com/finance/stocks/why-its-so-hard-to-spot-a-stock-market-bubble-63f40a1c?mod=rss_markets_main",
+    "summary_ja": "株価が急騰すると、市場参加者は「バブルだ」「まだ上がる」など将来を読めると考えがちだが、実際にバブルをリアルタイムで見抜くのは難しい。価格上昇には業績期待、金利、流動性、投資家心理など複数の要因が絡み、後からなら説明できても、渦中では合理的な上昇と過熱の境界が曖昧になる。投資判断では断定よりも不確実性を前提にしたリスク管理が重要だと示唆する内容。",
+    "categories": [
+      "投資・マーケット"
+    ],
+    "source_media": "www.wsj.com",
+    "source_feed": "Jason Zweig",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8144-a4e1-dfd255b971f7",
+    "title": "Hormuz Woes Seen Lingering Into Second Half, Goldman Poll Shows",
+    "url": "https://www.bloomberg.com/news/articles/2026-05-08/hormuz-woes-seen-lingering-into-second-half-goldman-poll-shows",
+    "summary_ja": "ゴールドマン・サックスの調査によると、ウォール街ではホルムズ海峡の航行障害が年後半まで長引くとの見方が強まっている。世界のエネルギー輸送の要衝である同海峡の混乱は、原油・LNGなどの供給制約や輸送コスト上昇を通じて、インフレ圧力や企業収益、市場心理に影響し得る。SaaS業界への直接影響は限定的だが、顧客企業のコスト環境や投資判断を左右するマクロリスクとして注視に値する。",
+    "categories": [
+      "地政学",
+      "投資・マーケット"
+    ],
+    "source_media": "www.bloomberg.com",
+    "source_feed": "Mia Gindis",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81f1-9e3c-d2da078e977e",
+    "title": "University College London Professor on the Cons of Hiring Consultants",
+    "url": "https://www.bloomberg.com/news/videos/2026-05-08/university-college-london-professor-on-the-cons-of-hiring-consultants",
+    "summary_ja": "ブルームバーグのOdd Lotsで、UCL教授マリアナ・マッツカート氏が、政府がコンサルタントに依存する理由とその弊害を議論。外部委託が行政内部の能力形成を妨げ、意思決定や実行の空洞化、非効率、公共サービスの失敗につながると指摘している。コンサル活用の是非、組織能力の内製化、公共部門のガバナンスを考える上で示唆がある。",
+    "categories": [
+      "経営・戦略",
+      "政策・規制",
+      "アカデミア"
+    ],
+    "source_media": "www.bloomberg.com",
     "source_feed": "Bloomberg Markets",
     "source_lang": "en",
     "fetched_date": "2026-05-08"
   },
   {
-    "id": "sample-003",
-    "title": "サンプル記事: スタートアップ調達ラウンド動向 2026 Q2",
-    "url": "https://example.com/su-funding",
-    "summary_ja": "Crunchbase 集計では Q2 米国 SU 調達額が前期比 -12%。AI エージェント領域は依然 ホット、消費者向け SaaS は伸び悩み。",
-    "categories": ["SU・VC"],
-    "source_media": "news.crunchbase.com",
-    "source_feed": "Crunchbase News",
+    "id": "35a3b641-55ad-8151-b742-dfa673314572",
+    "title": "Poland is now among the 20 largest economies. How it happened",
+    "url": "https://apnews.com/article/poland-economy-growth-g20-gdp-26fe06e120398410f8d773ba5661e7aa",
+    "summary_ja": "ポーランドは共産主義崩壊後の35年間で急成長し、世界20位級の経済規模に到達した。EU加盟による市場統合と資金流入、制度改革、教育水準、外資誘致が成長を支え、電動バスメーカーSolarisなど製造・技術分野の成功例も生まれている。一方で高齢化、相対的に低い賃金、地域格差など課題は残るが、若年層には将来への楽観も見られる。",
+    "categories": [
+      "地政学",
+      "政策・規制",
+      "投資・マーケット"
+    ],
+    "source_media": "apnews.com",
+    "source_feed": "surprisetalk",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81c9-a8dc-f1f0f0e48824",
+    "title": "Tesla is recalling its cheaper Cybertruck because the wheels might fall off",
+    "url": "https://www.theverge.com/transportation/926741/tesla-cybertruck-cheaper-recall",
+    "summary_ja": "Teslaは、廉価版の後輪駆動（RWD）Cybertruck全173台をリコールする。原因はブレーキローターの不具合で、走行中にホイールが外れる恐れがあるため。対象台数は少なく、同社は関連するブレーキ部品を無償交換する方針。現時点で、この問題に起因する事故や負傷は報告されていない。",
+    "categories": [
+      "消費者",
+      "テック"
+    ],
+    "source_media": "www.theverge.com",
+    "source_feed": "Hacker News",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81c5-8fb2-e8da30c9999c",
+    "title": "Google Cloud Fraud Defence is just WEI repackaged",
+    "url": "https://privatecaptcha.com/blog/google-cloud-fraud-defence-wei/",
+    "summary_ja": "Google Cloud Fraud Defenseは、2023年に批判を受けて撤回されたWeb Environment Integrity（WEI）と同種のデバイス認証を再包装したものだと指摘する記事。認定ハードウェアやGoogle Play Servicesへの依存により、プライバシー重視の利用者や一部環境を排除し、GoogleがWeb上の端末活動を横断的に把握できる懸念がある。ボット対策を掲げる一方、QRコード課題は回避可能で、実効性よりも監視・囲い込みリスクが大きいと批判している。",
+    "categories": [
+      "テック",
+      "政策・規制",
+      "消費者"
+    ],
+    "source_media": "privatecaptcha.com",
+    "source_feed": "Hacker News",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8146-900d-df6f4b7dc2d4",
+    "title": "“Cyber Defense Has to Move at the Speed of AI”",
+    "url": "https://hbr.org/2026/05/cyber-defense-has-to-move-at-the-speed-of-ai",
+    "summary_ja": "AIの普及により、サイバー攻撃は規模・速度・巧妙さを急速に増しており、従来型の防御体制では対応が遅れる可能性が高い。企業リーダーはサイバーセキュリティをIT部門任せにせず、経営課題として優先順位を引き上げる必要がある。AIを活用した検知・対応、リスク管理、組織横断の意思決定体制を整え、攻撃側と同等以上のスピードで防御を進化させることが重要だと論じている。",
+    "categories": [
+      "AI/ML",
+      "テック",
+      "経営・戦略"
+    ],
+    "source_media": "hbr.org",
+    "source_feed": "Adi Ignatius",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81ff-afc5-c63bbc466e37",
+    "title": "Live only at TechCrunch Disrupt 2026: Why most founders are already behind on raising a Series A in 2027",
+    "url": "https://techcrunch.com/2026/05/08/live-only-at-techcrunch-disrupt-2026-why-most-founders-are-already-behind-on-raising-a-series-a-in-2027/",
+    "summary_ja": "TechCrunch Disrupt 2026で実施されるライブセッションの告知記事。2027年のSeries A調達は従来より選別が厳しくなり、多くの創業者は準備不足に陥る可能性があると指摘する。投資家が重視する指標や調達環境の変化を理解し、早期から事業進捗、成長性、資本政策を整える必要があるという内容。SaaS創業者や支援者にとって、資金調達戦略の見直し材料となる。",
+    "categories": [
+      "SU・VC",
+      "投資・マーケット",
+      "経営・戦略"
+    ],
+    "source_media": "techcrunch.com",
+    "source_feed": "TechCrunch Events",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-817b-a258-cb88f66b1265",
+    "title": "CDC hantavirus outbreak classification lowest emergency activation level: Report",
+    "url": "https://thehill.com/policy/healthcare/5869488-cdc-hantavirus-outbreak-low-emergency-cdc/",
+    "summary_ja": "米CDCがハンタウイルス関連の対応で24時間体制の緊急オペレーションセンター（EOC）を稼働させたと報じられた。EOCの発動レベルは3段階で、今回の分類は最も低い「レベル3」。公衆衛生上の監視・調整を強める動きではあるが、現時点では最重大級の緊急事態ではない位置づけとされる。",
+    "categories": [
+      "政策・規制"
+    ],
+    "source_media": "thehill.com",
+    "source_feed": "Sarah Davis",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81e2-869d-c7a525975148",
+    "title": "Cyril Ramaphosa risks impeachment vote after ruling on burglary probe",
+    "url": "https://www.ft.com/content/d88cb529-0f33-4129-a34b-68ed27caaa25",
+    "summary_ja": "南アフリカのラマポーザ大統領は、2020年に私有の狩猟農場で起きた現金盗難事件をめぐる調査で、憲法違反の可能性を指摘され、弾劾手続きに進む議会採決に直面している。汚職対策と改革路線を掲げてきた同氏の政治的基盤が揺らぎ、与党ANC内の権力闘争や政策運営、投資家心理にも影響し得る局面となっている。",
+    "categories": [
+      "地政学",
+      "政策・規制",
+      "投資・マーケット"
+    ],
+    "source_media": "www.ft.com",
+    "source_feed": "World",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81ad-a2f5-f917c572e113",
+    "title": "UK grapples with fallout from deadly hantavirus outbreak on cruise ship",
+    "url": "https://www.ft.com/content/d687fd27-96fa-4121-9050-bd2a8755b19d",
+    "summary_ja": "英FTは、クルーズ船で発生した致死的なハンタウイルス感染事案を受け、英国当局が対応に追われていると報じた。英国籍の患者は南大西洋の小島トリスタン・ダ・クーニャで治療を受けている。旅行・クルーズ業界における感染症リスク管理や検疫、乗客対応の問題を示す事例だが、SaaS・経営戦略領域への直接的な示唆は限定的。",
+    "categories": [
+      "消費者",
+      "政策・規制"
+    ],
+    "source_media": "www.ft.com",
+    "source_feed": "World",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81e6-ab9f-e5dc5b979eee",
+    "title": "PC Engine CPU",
+    "url": "https://jsgroth.dev/blog/posts/pc-engine-cpu/",
+    "summary_ja": "PC Engineに搭載された8ビットCPU「HuC6280」の設計を解説する記事。最大7.16MHzで動作し、同世代機と比べて高速だが、命令セットやデータ幅は限定的で、8ビットCPUとしての制約を持つ。一方で、シンプルなメモリ管理機構によりアドレス空間を2MBまで拡張し、効率的なメモリマッピングで性能を引き出していた。レトロゲーム機のハードウェア設計理解に役立つ技術解説。",
+    "categories": [
+      "テック",
+      "消費者"
+    ],
+    "source_media": "jsgroth.dev",
+    "source_feed": "Hacker News",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81f5-904b-e0ec9ca65d9f",
+    "title": "Truecaller slashes 70 jobs amid declining ad sales",
+    "url": "https://techcrunch.com/2026/05/08/truecaller-slashes-70-jobs-amid-declining-ad-sales/",
+    "summary_ja": "発信者識別アプリのTruecallerが、広告売上の落ち込みを受けて約70人を削減する。インドでのリアルマネーゲーム規制や広告アルゴリズム変更が広告主需要を圧迫し、収益に悪影響が出た。一方で有料ユーザーは増加し、月間アクティブユーザーは5億人超に達しており、広告依存からサブスク収益へのシフトが経営課題になっている。",
+    "categories": [
+      "テック",
+      "経営・戦略",
+      "消費者"
+    ],
+    "source_media": "techcrunch.com",
+    "source_feed": "Ivan Mehta",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-817a-a33c-da72254ea1c7",
+    "title": "Four stable kernels with partial fixes for Dirty Frag",
+    "url": "https://lwn.net/Articles/1071775/",
+    "summary_ja": "Greg Kroah-Hartman氏が4本の安定版Linuxカーネルをリリースした。Dirty FragおよびCopy Fail 2と呼ばれるセキュリティ問題に対する修正が含まれるが、現時点では部分的な対策にとどまる。完全な修正には2つ目のパッチが必要で、現在も開発中とされる。Linux基盤を利用するSaaS事業者や運用チームは、適用状況と追加パッチの公開を継続確認すべき内容。",
+    "categories": [
+      "テック"
+    ],
+    "source_media": "lwn.net",
+    "source_feed": "Hacker News",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-810c-8311-de272df0d6cc",
+    "title": "Cocoa Prices Jump Over 15% as Investors Reposition",
+    "url": "https://www.wsj.com/finance/commodities-futures/cocoa-prices-jump-over-15-as-investors-reposition-3a9a4eb6?mod=rss_markets_main",
+    "summary_ja": "WSJによると、ココア価格は投資家のポジション調整を背景に今週、3カ月超ぶりの高値を付け、15％超の上昇軌道にある。需給や投機的な資金フローが相場を押し上げている一方、アナリストは2025年に見られたような高値圏へ戻る可能性は限定的とみている。チョコレートなど食品メーカーの原材料コストや消費者価格には一定の影響があり得るが、SaaS経営への直接的示唆は小さい。",
+    "categories": [
+      "投資・マーケット",
+      "消費者"
+    ],
+    "source_media": "www.wsj.com",
+    "source_feed": "Joe Stonor",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-817b-8985-fa512423e7ad",
+    "title": "How Gen Z Is Changing Charity",
+    "url": "https://www.bloomberg.com/news/videos/2026-05-08/how-gen-z-is-changing-charity-video",
+    "summary_ja": "Bloombergの動画では、GoFundMeのTim Cadogan CEOが、Z世代の寄付行動が慈善活動を変えていると説明している。若年層は社会課題への発信にとどまらず、他世代以上に実際の寄付を行い、社会的つながり、自己表現、デジタル上での共有が行動を後押ししているという。個人向けクラウドファンディング型の寄付は、既存NPOへの支援を奪うのではなく、むしろ寄付文化全体を広げる効果があるとされる。",
+    "categories": [
+      "消費者",
+      "テック",
+      "経営・戦略"
+    ],
+    "source_media": "www.bloomberg.com",
+    "source_feed": "Bloomberg Markets",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8111-9f9c-e63220908839",
+    "title": "Orange Juice Jumps Most in a Week on Shrinking Brazil Crop",
+    "url": "https://www.bloomberg.com/news/articles/2026-05-08/orange-juice-jumps-most-in-a-week-on-shrinking-brazil-crop",
+    "summary_ja": "ブラジルのオレンジ収穫見通しが悪化したことを受け、ニューヨーク市場でオレンジジュース先物が1週間で最大の上昇を記録した。ブラジルは世界最大のオレンジジュース輸出国であり、供給減少懸念が価格を押し上げている。天候や作柄不振による農産物コモディティ価格の変動が、飲料メーカーや消費者価格に波及する可能性がある。",
+    "categories": [
+      "投資・マーケット",
+      "消費者"
+    ],
+    "source_media": "www.bloomberg.com",
+    "source_feed": "Ana Mano, Dayanne Sousa",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8149-ab78-c0e775ab89e0",
+    "title": "Stock Strength Driven by Earnings, Not Economy: Santos",
+    "url": "https://www.bloomberg.com/news/videos/2026-05-08/stock-strength-driven-by-earnings-not-economy-santos-video",
+    "summary_ja": "JPMorganのガブリエラ・サントス氏がBloombergで、足元の株高は景気の強さではなく企業収益に支えられていると解説。米経済はAI投資に下支えされる一方、労働市場はヘッドラインほど堅調ではないと指摘した。AI関連の物色は大型テック中心から周辺企業へ広がり、地政学的混乱が続いても市場が上昇する背景として、収益期待とAIテーマの拡大があると説明している。",
+    "categories": [
+      "投資・マーケット",
+      "AI/ML",
+      "テック"
+    ],
+    "source_media": "www.bloomberg.com",
+    "source_feed": "Bloomberg Markets",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8125-8157-ef687e110d3f",
+    "title": "Hormuz Transits Halted Since Tuesday as US, Iran Clash",
+    "url": "https://www.bloomberg.com/news/articles/2026-05-08/hormuz-tracker-transits-halted-since-tuesday-as-us-iran-clash",
+    "summary_ja": "米国とイランがホルムズ海峡周辺で互いの資産を攻撃し合ったことを受け、同海峡は火曜日以降、商業船舶の通航が事実上停止している。世界の原油・LNG輸送の要衝であるため、長期化すればエネルギー価格、海運保険料、インフレ期待、金融市場に波及する可能性がある。SaaS企業への直接影響は限定的だが、顧客企業のコスト構造や投資判断に影響し得るマクロリスクとして注視が必要。",
+    "categories": [
+      "地政学",
+      "政策・規制",
+      "投資・マーケット"
+    ],
+    "source_media": "www.bloomberg.com",
+    "source_feed": "Julian Lee, Prejula Prem",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-811e-8e87-f5f0882d181a",
+    "title": "Bloomberg Surveillance 5/8/2026",
+    "url": "https://www.bloomberg.com/news/videos/2026-05-08/bloomberg-surveillance-5-8-2026-video",
+    "summary_ja": "Bloombergの市場番組「Bloomberg Surveillance」2026年5月8日配信回の動画。Jonathan Ferro、Lisa Abramowicz、Annmarie Hordernが、ウォール街からワシントンまでのリーダーや意思決定者に日々インタビューし、投資家や経営層が取引日を迎えるための視点を提供するという番組紹介が中心。個別テーマや具体的な市場材料はメタデータからは確認できない。",
+    "categories": [
+      "投資・マーケット",
+      "政策・規制"
+    ],
+    "source_media": "www.bloomberg.com",
+    "source_feed": "Bloomberg Markets",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81d7-8492-db151aa10e96",
+    "title": "Itau Asset’s Serra Sees Bulk of Brazil Rate Cuts After Elections",
+    "url": "https://www.bloomberg.com/news/articles/2026-05-08/itau-asset-s-serra-sees-bulk-of-brazil-rate-cuts-after-elections",
+    "summary_ja": "ブラジル中銀の元理事で、現在はイタウ・アセットに所属するブルーノ・セラ氏は、同国の利下げの大部分は10月の選挙後になる可能性が高いとの見方を示した。選挙前は財政運営や政治的不確実性が残り、金融当局は慎重姿勢を維持しやすい。ブラジル資産や新興国市場を見る上では参考になるが、SaaS経営や国内事業戦略への直接的影響は限定的。",
+    "categories": [
+      "投資・マーケット",
+      "政策・規制"
+    ],
+    "source_media": "www.bloomberg.com",
+    "source_feed": "Felipe Saturnino, Fernando Travaglini",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8144-9683-e500366c052b",
+    "title": "China solar panel maker Jinko to sell majority stake in US unit for $191m",
+    "url": "https://asia.nikkei.com/business/energy/china-solar-panel-maker-jinko-to-sell-majority-stake-in-us-unit-for-191m",
+    "summary_ja": "中国の太陽光パネル大手ジンコソーラーは、米国子会社の過半株式をプライベートエクイティのFH Capitalに1億9100万ドルで売却する。対象にはフロリダ工場の年産2GW規模の生産能力が含まれる見通し。米中対立や関税・産業政策の影響が強まる中、中国企業が米国製造拠点の支配権を手放す動きとして、再エネ供給網と対米投資戦略の観点で注目される。",
+    "categories": [
+      "投資・マーケット",
+      "地政学",
+      "政策・規制"
+    ],
+    "source_media": "asia.nikkei.com",
+    "source_feed": "Nikkei Asia",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8131-95f9-ed4c9a21aa56",
+    "title": "Footwear’s Inflation Solution Is a Big Problem",
+    "url": "https://www.businessoffashion.com/briefings/sports/footwears-inflation-solution-is-a-big-problem/",
+    "summary_ja": "米国のフットウェア市場では、販売金額は横ばいに見える一方、実際の購入数量は減少している。インフレ下でブランドや小売が価格を引き上げたことで売上規模が支えられているが、これは需要の強さではなく、消費者の購買力低下を覆い隠している可能性が高い。価格上昇に依存した成長は持続性に乏しく、在庫、値引き、ブランド価値、投資家評価に悪影響を及ぼすリスクがある。",
+    "categories": [
+      "消費者",
+      "経営・戦略",
+      "投資・マーケット"
+    ],
+    "source_media": "www.businessoffashion.com",
+    "source_feed": "Mike Sykes",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81a7-b11d-cdd072ea8cb2",
+    "title": "Watch live: Trump gives remarks from Rose Garden",
+    "url": "https://thehill.com/video-clips/5869571-trump-economic-agenda-luncheon/",
+    "summary_ja": "The Hillの記事は、トランプ大統領が金曜午後にホワイトハウスのローズガーデンで発言する予定を伝えるライブ動画告知。母の日を前に、米軍で任務中に子どもを亡くした「ゴールドスター」母親や、不法滞在者による事件で子どもを失った「エンジェル」母親を昼食会に招く内容で、主に政治的メッセージと支持層向けイベントの性格が強い。",
+    "categories": [
+      "政策・規制"
+    ],
+    "source_media": "thehill.com",
+    "source_feed": "The Hill Staff",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8187-a536-cd373fba1534",
+    "title": "Spencer Pratt was ‘relentless’ in LA mayor debate: Billy Bush",
+    "url": "https://thehill.com/blogs/in-the-know/5869328-billy-bush-spencer-pratt-debate/",
+    "summary_ja": "米政治メディアThe Hillの記事。元「Access Hollywood」司会者のビリー・ブッシュ氏がNewsNation番組で、ロサンゼルス市長選の討論会に出席した元リアリティ番組出演者スペンサー・プラット氏について、現職のカレン・バス市長らに対し「容赦なく」追及していたと評価した。記事は著名人候補の討論会での振る舞いに焦点を当てたローカル政治・芸能寄りの内容。",
+    "categories": [
+      "政策・規制"
+    ],
+    "source_media": "thehill.com",
+    "source_feed": "Ryan Mancini",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81f2-a61d-d3acbaa8fc62",
+    "title": "Virginia Supreme Court throws out redistricting results",
+    "url": "https://thehill.com/regulation/court-battles/5869616-virginia-supreme-court-tosses-redistricting-map-2026-midterms/",
+    "summary_ja": "バージニア州最高裁は、民主党主導の区割り変更に関する住民投票について、必要な手続きに従っていなかったとして4対3で無効と判断した。これにより、民主党に有利な10対1の連邦下院選挙区地図は破棄され、現行の6対5の区割りが維持される。2026年中間選挙を巡る党派間の議席争いに影響するが、企業経営やSaaS領域への直接的影響は限定的。",
+    "categories": [
+      "政策・規制"
+    ],
+    "source_media": "thehill.com",
+    "source_feed": "Julia Mueller",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8144-b639-ce9b378c67e4",
+    "title": "US revoking passports of parents who owe more than $2,500 in child support",
+    "url": "https://thehill.com/homenews/administration/5869607-state-department-revokes-passports/",
+    "summary_ja": "米国務省は、養育費の滞納額が2,500ドルを超える親について、パスポートの発給対象外とし、既存パスポートの取り消しも進める方針を示した。根拠は1996年法にあり、これまではあまり活用されてこなかった措置だが、養育費の履行を促すため執行を強化する。対象者は海外渡航や国外での身分証明に影響を受ける可能性がある。",
+    "categories": [
+      "政策・規制",
+      "消費者"
+    ],
+    "source_media": "thehill.com",
+    "source_feed": "Sarah Davis",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8141-a2c3-f9f6a31033ce",
+    "title": "Mamdani’s $6 billion mistake",
+    "url": "https://thehill.com/opinion/campaign/5869509-griffin-citadel-nyc-mamdani/",
+    "summary_ja": "The Hill掲載のオピニオン記事。ニューヨーク市長選候補ゾーラン・マムダニ氏の富裕層・企業への増税や反ビジネス姿勢が、企業移転や高所得者流出を招き、市の税収基盤を毀損すると批判している。特にCitadelのケン・グリフィン氏ら金融・投資業界の流出を例に、歳出削減を伴わない増税路線は都市の競争力低下とさらなる税負担増の悪循環を生むとの主張。",
+    "categories": [
+      "政策・規制",
+      "投資・マーケット"
+    ],
+    "source_media": "thehill.com",
+    "source_feed": "Liz Peek, opinion contributor",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8109-b436-d6b73fdeae24",
+    "title": "Proceedings of the 2025 Workshop on Law-Following AI",
+    "url": "https://www.lawfaremedia.org/article/proceedings-of-the-2025-workshop-on-law-following-ai",
+    "summary_ja": "Lawfare掲載の「2025年 Law-Following AI ワークショップ」議事録。AIシステムが法律に従うための設計、評価、ガバナンスをめぐる初回ワークショップの成果を整理し、研究課題や制度面の論点を提示している。AIの安全性・法令遵守・責任ある導入に関する学術・政策コミュニティ向けの内容で、SaaS企業のAI活用やコンプライアンス戦略を考える上でも参考になる。",
+    "categories": [
+      "AI/ML",
+      "政策・規制",
+      "アカデミア"
+    ],
+    "source_media": "www.lawfaremedia.org",
+    "source_feed": "Cullen O'Keefe, Charlie Winter, Matthijs Maas, Janna Tay",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-818e-919b-ec5e0650cdae",
+    "title": "Markets are banking on the ‘Bliss trade’",
+    "url": "https://www.ft.com/content/60f60089-9486-481c-859c-f29b8ccbbd90",
+    "summary_ja": "本記事は、市場が「Bliss trade」と呼ばれる楽観シナリオを織り込み、株価が高水準を維持している背景を論じる。投資家は、景気や企業収益の底堅さに加え、危機時には政府・中央銀行による大規模かつ持続的な支援が下支えすると見ている。ただし、この前提は政策余地やインフレ、金利環境に依存しており、期待が崩れればバリュエーション調整のリスクもある。",
+    "categories": [
+      "投資・マーケット",
+      "政策・規制",
+      "経営・戦略"
+    ],
+    "source_media": "www.ft.com",
+    "source_feed": "World",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-813e-bbf6-c8b59666d70e",
+    "title": "EU prosecutors probe France’s Bardella over alleged misuse of funds",
+    "url": "https://www.ft.com/content/aa433301-2a15-4e0d-b79f-c818dba0df93",
+    "summary_ja": "英FTによると、EU検察当局はフランス極右政党「国民連合（RN）」のジョルダン・バルデラ党首について、欧州議会関連資金を不適切に使用した疑いで調査している。問題視されているのは、メディア対応訓練の費用を本来の目的に反して支払った可能性。RNは過去にも欧州議会資金の流用疑惑で追及されており、フランス政界および欧州政治における同党の信頼性に影響する可能性がある。",
+    "categories": [
+      "政策・規制",
+      "地政学"
+    ],
+    "source_media": "www.ft.com",
+    "source_feed": "World",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8150-b1be-c555ceb1617d",
+    "title": "Ryan Cohen, GameStop’s rebel CEO",
+    "url": "https://www.ft.com/content/c0023a3e-08ec-44e8-80a6-f9abb343c52e",
+    "summary_ja": "GameStopのライアン・コーエンCEOによるeBayへの560億ドル規模の敵対的買収提案を扱う記事。ウォール街は戦略合理性や資金調達の実現性に疑問を抱く一方、GameStopの「ミーム株」としての個人投資家人気を買収通貨や交渉圧力に使う新型M&Aの可能性を示す。小売・EC再編というより、資本市場の熱狂と経営者主導の大胆な戦略が交差する事例として注目される。",
+    "categories": [
+      "投資・マーケット",
+      "経営・戦略",
+      "消費者"
+    ],
+    "source_media": "www.ft.com",
+    "source_feed": "World",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81ab-bceb-d6bcdfbd91e7",
+    "title": "Serving a Website on a Raspberry Pi Zero Running in RAM",
+    "url": "https://btxx.org/posts/memory/",
+    "summary_ja": "Raspberry Pi Zero上でAlpine LinuxをRAMディスク運用し、ストレージを使わずに静的Webサイトを配信する手順を紹介する記事。軽量Webサーバーを載せ、TLS終端や外部公開は小規模VPSに任せる構成にすることで、安価かつシンプルに自宅ホスティングを実現できる。耐久性や運用負荷の観点では実験・個人用途向けで、企業SaaS基盤への直接適用性は限定的。",
+    "categories": [
+      "テック"
+    ],
+    "source_media": "btxx.org",
+    "source_feed": "Hacker News",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8102-b3b9-e1a69962549e",
+    "title": "Election special: snap analysis",
+    "url": "https://www.ft.com/content/2e03d7ff-77d1-47e9-a44a-d0b22bffe307",
+    "summary_ja": "FTの選挙速報分析は、有権者が労働党に厳しい判断を下し、同時に主要政党から離れて支持が分散している状況を伝えている。従来の二大政党中心の構図が揺らぎ、小政党や代替勢力への流出が進むことで、今後の政局運営や政策形成の不確実性が高まる可能性がある。ただし、現時点ではSaaS経営や投資判断への直接的影響は限定的。",
+    "categories": [
+      "政策・規制",
+      "地政学"
+    ],
+    "source_media": "www.ft.com",
+    "source_feed": "World",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81dd-85c8-ea810abffc7a",
+    "title": "Waste Industry Is Recession-Resilient: Republic Services",
+    "url": "https://www.bloomberg.com/news/videos/2026-05-08/waste-industry-is-recession-resilient-republic-services-video",
+    "summary_ja": "Republic ServicesのCEO、Jon Vander Ark氏がBloomberg番組で、廃棄物処理業界は景気後退局面でも需要が底堅く、利益率も強い「リセッション耐性」のある事業だと説明した。さらに、使用済みプラスチックを新たなボトル原料へ戻す高度リサイクルに5億ドルを投じる方針を紹介。将来的にはAIが回収ルート最適化、選別効率化、運営コスト削減などで廃棄物管理の大きな変革要因になると述べた。",
+    "categories": [
+      "経営・戦略",
+      "投資・マーケット",
+      "AI/ML"
+    ],
+    "source_media": "www.bloomberg.com",
+    "source_feed": "Bloomberg Markets",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8136-b9d0-c650f0b4264c",
+    "title": "Greene says UFO files release ‘shiny object propaganda’ as ‘they wage foreign wars’",
+    "url": "https://thehill.com/homenews/administration/5869568-marjorie-taylor-greene-trump-pentagon-ufo-files-propaganda/",
+    "summary_ja": "米共和党のマージョリー・テイラー・グリーン前下院議員は、国防総省がUAP（未確認異常現象）・UFO関連文書162件を公開したことについて、トランプ政権が「外国で戦争を進める」中で国民の注意をそらす「光り物のプロパガンダ」だと批判した。政権は透明性向上の一環として公開を進めているが、記事の焦点は米国内政治における情報公開と外交・軍事政策への不信にある。",
+    "categories": [
+      "政策・規制",
+      "地政学"
+    ],
+    "source_media": "thehill.com",
+    "source_feed": "Ryan Mancini",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81e5-8312-dcaa75dfe7ef",
+    "title": "Pentagon releases UFO files on new website",
+    "url": "https://techcrunch.com/2026/05/08/pentagon-releases-ufo-files-on-new-website/",
+    "summary_ja": "米国防総省は、UFOに相当する「未確認異常現象（UAP）」に関する機密解除済み資料を一般公開する新サイトを立ち上げた。動画、写真、文書などを複数の政府機関から集約し、過去の遭遇事例や調査情報を閲覧できるようにする。政府の透明性向上の一環だが、SaaS・経営戦略への直接的示唆は限定的。",
+    "categories": [
+      "政策・規制",
+      "地政学",
+      "テック"
+    ],
+    "source_media": "techcrunch.com",
+    "source_feed": "Sarah Perez",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81f5-9f3d-eea1c95106be",
+    "title": "The Politically Motivated Indictment of Southern Poverty Law Center",
+    "url": "https://www.lawfaremedia.org/article/the-politically-motivated-indictment-of-southern-poverty-law-center",
+    "summary_ja": "米司法省による南部貧困法律センター（SPLC）への起訴について、著者は政治的動機に基づく「冷笑的」な訴追だと批判している。起訴内容の背景、主張される違法性、法的構成の弱点を検討し、司法権力が政治的対立団体への圧力手段として使われる危険性を論じる内容とみられる。",
+    "categories": [
+      "政策・規制"
+    ],
+    "source_media": "www.lawfaremedia.org",
+    "source_feed": "Christopher Hardee",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81c0-aca1-f4f8f09c364f",
+    "title": "Oil crisis sparks Japanese dash for corporate credit lines",
+    "url": "https://asia.nikkei.com/business/finance/oil-crisis-sparks-japanese-dash-for-corporate-credit-lines",
+    "summary_ja": "原油危機を背景に、日本企業が手元資金確保のため銀行のコミットメントラインなど企業向け信用枠の利用・設定を急いでいる。燃料・原材料価格の上昇や供給ショックで運転資金需要が膨らみ、特に中小企業では資金繰り悪化と倒産リスクが高まっている。金融機関の与信姿勢や企業の財務防衛策が注目点となる。",
+    "categories": [
+      "投資・マーケット",
+      "経営・戦略",
+      "地政学"
+    ],
+    "source_media": "asia.nikkei.com",
+    "source_feed": "Nikkei Asia",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81a4-b72e-f7e4d65dd5e0",
+    "title": "Microsoft Shares Sink After TCI Cuts $8 Billion Stake",
+    "url": "https://www.theinformation.com/briefings/microsoft-shares-sink-tci-cuts-8-billion-stake",
+    "summary_ja": "英ヘッジファンドTCIが、保有していた約80億ドル規模のMicrosoft株のほぼ全てを売却したとFinancial Timesが報じ、Microsoft株は下落した。TCIのクリストファー・ホーンCEOは投資家向け書簡で、AIが既存ソフトウェアを代替し得る中、Microsoftの将来的な競争力に不確実性があると説明。AI時代における大手ソフトウェア企業の評価や投資家心理の変化を示す動き。",
+    "categories": [
+      "AI/ML",
+      "投資・マーケット",
+      "テック"
+    ],
+    "source_media": "www.theinformation.com",
+    "source_feed": "Aaron Holmes",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-8112-9346-c4d738fbc3fe",
+    "title": "Marketers on the Move: Hires and Exits at GM, Old Navy, Canva, and More",
+    "url": "https://www.adweek.com/brand-marketing/marketers-on-the-move-hires-and-exits-at-gm-old-navy-canva-and-more/",
+    "summary_ja": "Adweekによるマーケティング幹部人事の週次まとめ。GM、Old Navy、Canvaなど米国・グローバル企業でのCMO級を含む採用、退任、異動を取り上げ、各社がブランド成長、顧客獲得、クリエイティブ戦略を担うリーダー体制を更新している状況を概観する内容。個別企業の戦略転換を示す手掛かりにはなるが、SaaS経営への直接的示唆は限定的。",
+    "categories": [
+      "経営・戦略",
+      "消費者",
+      "テック"
+    ],
+    "source_media": "www.adweek.com",
+    "source_feed": "Rebecca Stewart",
+    "source_lang": "en",
+    "fetched_date": "2026-05-08"
+  },
+  {
+    "id": "35a3b641-55ad-81f1-9da2-f968d070bdc7",
+    "title": "The New York Times Grew Digital Ad Revenue 32% in Q1. Here’s How to Copy It",
+    "url": "https://www.adweek.com/media/new-york-times-digital-ad-growth-q1-2026-copy/",
+    "summary_ja": "New York Timesは2026年第1四半期にデジタル広告収入を32%伸ばし、2四半期連続で高成長を達成した。広告責任者Joy Robins氏は、質の高い読者基盤、信頼性の高い編集環境、ファーストパーティデータ、広告主への提案力を組み合わせた戦略を説明。サブスク中心の媒体でも、ブランド価値とデータ活用により広告事業を再成長させられる事例として示されている。",
+    "categories": [
+      "経営・戦略",
+      "テック",
+      "消費者"
+    ],
+    "source_media": "www.adweek.com",
+    "source_feed": "Mark Stenberg",
     "source_lang": "en",
     "fetched_date": "2026-05-08"
   }

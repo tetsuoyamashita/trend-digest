@@ -41,7 +41,7 @@ CATEGORY_DISPLAY = {
     'invest': '投資・マーケット', 'policy': '政策・規制', 'geopolitics': '地政学',
     'consumer': '消費者', 'academia': 'アカデミア',
 }
-PROMPT_VERSION = 'v0.2.3'
+PROMPT_VERSION = 'v0.3.0'
 DEFAULT_MODEL = 'gpt-5.5'
 NOTION_RPS = 3
 NOTION_BATCH = 10
@@ -92,7 +92,7 @@ def fetch_readwise_all(token: str) -> list[dict]:
 def call_openai(messages: list[dict], model: str, api_key: str) -> dict:
     body = json.dumps({
         'model': model,
-        'max_completion_tokens': 800,
+        'max_completion_tokens': 1500,
         'messages': messages,
         'response_format': {'type': 'json_object'},
     }).encode()
@@ -138,7 +138,7 @@ def llm_classify_summarize(record: dict, model: str, api_key: str) -> dict:
         f'\nReturn JSON with this exact shape:\n'
         '{\n'
         '  "categories": ["ai_ml" | "tech" | "mgmt" | "startup_vc" | "invest" | "policy" | "geopolitics" | "consumer" | "academia", ...],  // 1-3 items\n'
-        '  "summary_ja": "200-400 字の日本語要約 (経営コンサル/SaaS 経営者の戦略判断に使える視点を含める)",\n'
+        '  "summary_ja": "400-700 字の日本語要約 (背景・主要事実・数値・関係者・含意を網羅し、経営コンサル/SaaS 経営者の戦略判断に使える視点を必ず含める。冒頭一文に短いリード、続けて詳細、最後に示唆の構成)",\n'
         '  "source_lang": "ja" | "en" | "other"\n'
         '}\n'
     )
