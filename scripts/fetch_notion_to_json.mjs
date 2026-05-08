@@ -6,7 +6,9 @@ import { resolve } from 'node:path';
 
 const TOKEN = process.env.NOTION_TOKEN;
 const DB_ID = process.env.NOTION_DB_ARTICLES;
-const OUT = resolve('site/src/data/articles.json');
+// Astro が import している sample json を上書きすることで、build 結果に反映させる
+// (Astro 5 では import が build-time 解決のため、ファイル名を統一する方が単純)
+const OUT = resolve('site/src/data/articles.sample.json');
 
 if (!TOKEN || !DB_ID) {
   console.error('Missing NOTION_TOKEN or NOTION_DB_ARTICLES');
