@@ -1,9 +1,10 @@
-# trend-digest アーキ設計 v0.2.1
+# trend-digest アーキ設計 v0.2.2
 
 最終更新: 2026-05-08
-ステータス: GO 判定済（G1 C / G2 C 確定 + Codex G3/G4 微整合）
+ステータス: Phase 2 着手中（GitHub repo + Notion DB 完了、24 RSS 登録完了）
 v0.1 → v0.2 主な変更: review 結果反映（H1-H7, C1, C2, M1-M12）+ RSS 実機検証反映
 v0.2 → v0.2.1: G1（公開許容+memo 除外）/ G2（予算 $150）/ Codex H-new-3,4 整合修正
+v0.2.1 → v0.2.2: **Anthropic は Readwise が独自取得できるため XMCP X 経由を撤回 → 24 RSS 単一経路化**、保留 4 件（Anthropic / The Information / 電通報 / Trendwatching）を全て Readwise 経由で維持
 
 ## 1. 目的
 
@@ -80,12 +81,9 @@ LLM 出力 JSON / Notion select / Dashboard filter / Slack tag で同一 enum �
 │     (3 req/s, batch=10, 429 retry x3 expo)     │
 │  ⑥ processing_status を run log DB に記録      │
 │     (success / partial / failed の単位は記事)  │
-│  ⑦ Anthropic news 補強: XMCP の               │
-│     getUsersPosts(@AnthropicAI, since=24h)     │
-│     → 同様に dedup→LLM→Notion                 │
-│  ⑧ GitHub Actions trigger:                     │
+│  ⑦ GitHub Actions trigger:                     │
 │     repository_dispatch event_type=rebuild     │
-│  ⑨ Slack #ai-digest 朝1通                      │
+│  ⑧ Slack #ai-digest 朝1通                      │
 │     ⭐ 高 上位 5-10 件 + dashboard URL          │
 │  Error: errorWorkflow=wf-ops-error             │
 └──────────────────────────────────────────────┘
@@ -244,9 +242,8 @@ T+5s    LLM Classify+Summarize batch (~100 件、並列 5、~60 秒)
         JSON parse 失敗は 1 retry → still 失敗なら failed_parse 記録
 T+1m    Notion DB insert (~100 req、3 req/s、batch=10、~33 秒)
         429 → exponential backoff (1s, 2s, 4s) x3
-T+2m    XMCP getUsersPosts(@AnthropicAI, since=24h) → 同パイプライン
-T+2m30s GitHub Actions trigger (repository_dispatch)
-T+2m30s Slack 通知 #ai-digest（並列）
+T+2m    GitHub Actions trigger (repository_dispatch)
+T+2m    Slack 通知 #ai-digest（並列）
 T+3m    Astro build + Pagefind index
 T+5m    gh-pages deploy
 T+6m    完了 → run-log DB を success / partial / failed で update
@@ -284,7 +281,7 @@ T+6m    完了 → run-log DB を success / partial / failed で update
 | R7 | dashboard 公開漏洩 | 関心領域・閲覧履歴の流出 | G1 C 採用: 公開許容、noindex/robots.txt + memo dashboard 除外で割り切る（URL を外部に貼らない運用） |
 | R8 | n8n + GH Actions 片肺障害 | dashboard 古いまま | wf-ops-error 経由 Slack 通知、手動 trigger ボタン（GH Actions workflow_dispatch）|
 | R9 | LLM コスト超過 | $150/月超え | run-log DB で日次トークン+forecast 記録、$150 超過実績で翌月 gpt-5.5-mini 切替を山下判断（hard stop なし）|
-| R10 | community Anthropic feed メンテ停止 | AI/ML 一部欠落 | Q4 B 採用: XMCP の `getUsersPosts(@AnthropicAI)` 経由で公式 X から取得（24h）|
+| R10 | Anthropic 取得経路 | AI/ML 一部欠落 | v0.2.2: Readwise が独自 scraper で取得確認（5/3h）→ Readwise 単一経路で運用。Readwise 側で取れなくなったら XMCP X 経由 fallback を v0.3 で検討 |
 | R11 | feed 別 source-cap 漏れ | HN/BoF が量多すぎ | per-source cap（HN top30、BoF top10/日）を WF で実装、超過は dropped カウント記録 |
 
 ---

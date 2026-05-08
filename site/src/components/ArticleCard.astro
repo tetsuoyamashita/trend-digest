@@ -1,0 +1,45 @@
+---
+interface Article {
+  title: string;
+  url: string;
+  summary_ja: string;
+  categories: string[];
+  priority: 'high' | 'mid' | 'low';
+  source_media: string;
+  fetched_date: string;
+  source_lang: string;
+}
+const { article } = Astro.props as { article: Article };
+const priorityLabel = { high: '⭐ 高', mid: '◯ 中', low: '─ 低' }[article.priority];
+const priorityColor = { high: 'var(--high)', mid: 'var(--mid)', low: 'var(--low)' }[article.priority];
+---
+<article class="card" data-pagefind-body>
+  <div class="card-header">
+    <span class="priority" style={`color:${priorityColor}`}>{priorityLabel}</span>
+    {article.categories.map((c: string) => (<span class="cat-tag">{c}</span>))}
+    <span class="lang">{article.source_lang}</span>
+  </div>
+  <h2 class="card-title"><a href={article.url} target="_blank" rel="noopener">{article.title}</a></h2>
+  <p class="summary">{article.summary_ja}</p>
+  <div class="card-footer">
+    <span class="source">{article.source_media}</span>
+    <span class="date">{article.fetched_date}</span>
+  </div>
+</article>
+<style>
+  .card {
+    background: white; border: 1px solid var(--border); border-radius: 6px;
+    padding: 1rem; margin-bottom: 0.75rem;
+  }
+  .card-header { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .priority { font-weight: bold; }
+  .cat-tag {
+    background: #eef2ff; color: var(--accent); padding: 0.1rem 0.5rem; border-radius: 3px; font-size: 0.75rem;
+  }
+  .lang { font-size: 0.75rem; color: var(--muted); padding: 0.1rem 0.4rem; border: 1px solid var(--border); border-radius: 3px; }
+  .card-title { margin: 0 0 0.5rem 0; font-size: 1rem; }
+  .card-title a { color: var(--fg); text-decoration: none; }
+  .card-title a:hover { text-decoration: underline; }
+  .summary { margin: 0.5rem 0; color: var(--fg); font-size: 0.9rem; }
+  .card-footer { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); }
+</style>

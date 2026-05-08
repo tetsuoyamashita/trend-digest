@@ -1,0 +1,57 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import articlesData from '../data/articles.sample.json';
+
+const CATEGORIES = [
+  { id: 'all', label: '全カテゴリ' },
+  { id: 'AI/ML', label: 'AI/ML' },
+  { id: 'テック', label: 'テック' },
+  { id: '経営・戦略', label: '経営・戦略' },
+  { id: 'SU・VC', label: 'SU・VC' },
+  { id: '投資・マーケット', label: '投資・マーケット' },
+  { id: '政策・規制', label: '政策・規制' },
+  { id: '地政学', label: '地政学' },
+  { id: '消費者', label: '消費者' },
+  { id: 'アカデミア', label: 'アカデミア' },
+];
+
+const activeCategory = Astro.url.searchParams.get('category') ?? 'all';
+const articles = (articlesData as any[]).filter(
+  a => activeCategory === 'all' || a.categories.includes(activeCategory),
+);
+---
+<Layout title={`Trend Digest - ${activeCategory === 'all' ? '全カテゴリ' : activeCategory}`}>
+  <nav class="tabs">
+    {CATEGORIES.map(c => (
+      <a href={`/trend-digest/?category=${encodeURIComponent(c.id)}`} class={c.id === activeCategory ? 'active' : ''}>{c.label}</a>
+    ))}
+  </nav>
+  <div class="controls">
+    <div id="search"></div>
+    <select id="period-filter">
+      <option value="all">全期間</option>
+      <option value="1">今日</option>
+      <option value="7">7日</option>
+      <option value="30">30日</option>
+    </select>
+    <select id="priority-filter">
+      <option value="all">優先度: 全て</option>
+      <option value="high">⭐ 高のみ</option>
+    </select>
+  </div>
+  <div class="article-list">
+    {articles.length === 0
+      ? <p>記事がありません。新規 fetch を待つか、別カテゴリを選んでください。</p>
+      : articles.map((a: any) => <ArticleCard article={a} />)}
+  </div>
+  <script src="/trend-digest/pagefind/pagefind-ui.js" is:inline onerror="this.remove()"></script>
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      const target = document.getElementById('search');
+      if (target && window.PagefindUI) {
+        new window.PagefindUI({ element: '#search', showSubResults: false });
+      }
+    });
+  </script>
+</Layout>

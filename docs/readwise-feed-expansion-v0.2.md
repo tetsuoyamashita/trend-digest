@@ -1,9 +1,13 @@
-# Readwise Feed 拡張プラン v0.2.1
+# Readwise Feed 拡張プラン v0.2.2
 
 最終更新: 2026-05-08
-ステータス: 山下登録作業前（実機検証 100% 完了済、GO 判定済）
-v0.1 → v0.2 主な変更: C1 反映で 25 候補中の NG を排除、代替検証 + 新規追加で **23 RSS feed + 1 X 取得**に再構成
+ステータス: **山下登録作業完了（24 RSS）**
+v0.1 → v0.2 主な変更: C1 反映で 25 候補中の NG を排除、代替検証 + 新規追加で 23 RSS + 1 X 取得に再構成
 v0.2 → v0.2.1: 17 feed 登録時間バッファを 30-45 → 60-90 分に修正
+v0.2.1 → v0.2.2: **登録完了確認後の最終構成 24 RSS 確定**
+- Anthropic は Readwise が独自取得できているため **Readwise 経由に統一**（XMCP X 経由は不要に変更）
+- The Information / 電通報 / Trendwatching は Readwise で取得できるため**保留 4 件は維持**（v0.2.1 の除外判断を撤回）
+- 結果として 23 RSS + 1 X → **24 RSS** に簡素化
 
 ## 背景
 
@@ -18,14 +22,14 @@ v0.1 で挙げた 25 RSS のうち **11 件が NG**（404 / 廃止 / 認証必�
 
 ## 9 カテゴリ別 確定 RSS（v0.2、全件 200 + RSS parse OK）
 
-### 1. AI/ML（3 RSS + 1 X 取得）
+### 1. AI/ML（4 RSS、v0.2.2 で全 RSS 化）
 
 | ソース | RSS URL | 言語 | 確認 |
 |---|---|---|---|
 | TLDR AI（既存）| `https://tldr.tech/api/rss/ai` | en | 200, 20 items |
 | AlphaSignal（既存、v0.2 で URL 変更）| `https://alphasignal.substack.com/feed` | en | 200, 1 items（substack 化）|
 | OpenAI Blog | `https://openai.com/blog/rss.xml` | en | 200, 944 items（archive 含む）|
-| **Anthropic は X 経由**（公式 RSS なし）| XMCP `getUsersPosts(@AnthropicAI, since=24h)` | en | 山下確定 Q4 B |
+| **Anthropic Engineering Blog**（v0.2.2 で Readwise 経由に変更）| Readwise が独自取得（公式 RSS は 404 だが Readwise 内部 scraper で配信、author=`Anthropic Engineering Blog` で 5+/週確認）| en | Readwise UI 経由のみ |
 
 ### 2. テック（3）
 
@@ -49,8 +53,7 @@ v0.1 で挙げた 25 RSS のうち **11 件が NG**（404 / 廃止 / 認証必�
 |---|---|---|---|
 | Crunchbase News（v0.2 で UA 必須明記）| `https://news.crunchbase.com/feed/` | en | 200, 10 items（**Mozilla User-Agent 必須**、デフォルト UA は 403）|
 | Stratechery | `https://stratechery.com/feed/` | en | 200, 10 items |
-
-The Information は購読者専用 RSS のため除外（Q4 A 確定）。
+| **The Information**（v0.2.2 で復活）| Readwise が独自取得（公式 RSS は購読者専用、Readwise 内部 scraper、5/3h 確認）| en | Readwise UI 経由 |
 
 ### 5. 投資・マーケット（2）
 
@@ -90,8 +93,8 @@ Reuters World は廃止 → 削除。日経国際は公式 RSS なし → Nikkei
 | Adweek | `https://www.adweek.com/feed/` | en | 200, 10 items |
 | BoF (Business of Fashion) | `https://www.businessoffashion.com/feed/` | en | 200, 100 items（per-source cap=10/日 を WF で適用）|
 | Digiday | `https://digiday.com/feed/` | en | 200, 15 items |
-
-Trendwatching / 電通報 は両方 RSS なし確定 → 削除（F1 採用、グローバル候補で再構成）。
+| **電通報**（v0.2.2 で復活）| Readwise が独自取得（公式 RSS は 404、5/3h 確認）| ja | Readwise UI 経由 |
+| **Trendwatching**（v0.2.2 で復活）| Readwise が独自取得（公式 RSS は 404、5/3h 確認）| en | Readwise UI 経由 |
 
 ### 9. アカデミア（1）
 
@@ -107,16 +110,16 @@ L7: https 正規化済（v0.1 の http から変更）。SSRN / NBER は v0.3 �
 
 | カテゴリ | feed 数 |
 |---|---|
-| AI/ML | 3 RSS + 1 X |
+| AI/ML | 4 (TLDR / OpenAI / AlphaSignal / **Anthropic**) |
 | テック | 3 |
 | 経営・戦略 | 3 |
-| SU・VC | 2 |
+| SU・VC | 3 (Crunchbase / Stratechery / **The Information**) |
 | 投資・マーケット | 2 |
 | 政策・規制 | 4 |
 | 地政学 | 3 |
-| 消費者 | 3 |
+| 消費者 | 5 (Adweek / BoF / Digiday / **電通報** / **Trendwatching**) |
 | アカデミア | 1 |
-| **合計** | **23 RSS + 1 X** |
+| **合計** | **24 RSS** |
 
 ---
 

@@ -1,0 +1,60 @@
+name: build-dashboard
+
+on:
+  repository_dispatch:
+    types: [rebuild]
+  workflow_dispatch:
+  schedule:
+    # 念のため毎朝 06:30 JST (= 21:30 UTC) で再ビルド（n8n trigger fail 時の保険）
+    - cron: '30 21 * * *'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: site/package-lock.json
+
+      - name: Fetch articles from Notion DB
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DB_ARTICLES: ${{ secrets.NOTION_DB_ARTICLES }}
+        run: |
+          if [ -z "$NOTION_TOKEN" ]; then
+            echo "NOTION_TOKEN not set, using sample data"
+            exit 0
+          fi
+          node scripts/fetch_notion_to_json.mjs
+
+      - name: Install Astro deps
+        working-directory: site
+        run: npm ci
+
+      - name: Build (Astro + Pagefind)
+        working-directory: site
+        run: npm run build
+
+      - name: Inject robots.txt to dist
+        run: cp public/robots.txt site/dist/robots.txt
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: site/dist
+          force_orphan: true
+          commit_message: 'deploy: ${{ github.event.head_commit.message || github.event.action || ''manual'' }}'
