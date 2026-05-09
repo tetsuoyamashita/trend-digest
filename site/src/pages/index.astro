@@ -25,10 +25,10 @@ const CAT_DISPLAY: Record<string, string> = {
 };
 const displayCat = (c: string) => CAT_DISPLAY[c] ?? c;
 const PERIODS = [
-  { id: 'today', label: '今日' },
-  { id: '3d',    label: '3日' },
-  { id: '7d',    label: '7日' },
-  { id: '30d',   label: '30日' },
+  { id: 'yesterday', label: '昨日' },
+  { id: '3d',        label: '3日' },
+  { id: '7d',        label: '7日' },
+  { id: '30d',       label: '30日' },
 ];
 
 const articles: Article[] = (articlesData as Article[])
@@ -140,7 +140,7 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       };
       const displayCat = c => CAT_DISPLAY[c] || c;
 
-      let activePeriod = 'today';
+      let activePeriod = 'yesterday';
       let activeCategory = 'all';
       const rows = Array.from(document.querySelectorAll('.row'));
 
@@ -149,14 +149,21 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
         const tz = new Date(now.getTime() + 9 * 3600 * 1000);
         return tz.toISOString().slice(0, 10);
       }
-      const TODAY = todayJST();
+      function yesterdayJST() {
+        const t = new Date(todayJST() + 'T00:00:00Z');
+        t.setUTCDate(t.getUTCDate() - 1);
+        return t.toISOString().slice(0, 10);
+      }
+      const YESTERDAY = yesterdayJST();
 
+      // 期間は「昨日」を基準にした N 日間 (昨日含む)
+      // 例: 3日 = 昨日 / 一昨日 / 3 日前 の 3 日分
       function inPeriod(fetchedDate, periodId) {
         if (!fetchedDate) return false;
-        if (periodId === 'today') return fetchedDate === TODAY;
+        if (periodId === 'yesterday') return fetchedDate === YESTERDAY;
         const days = { '3d': 3, '7d': 7, '30d': 30 }[periodId];
         if (!days) return true;
-        const d0 = new Date(TODAY + 'T00:00:00Z').getTime();
+        const d0 = new Date(YESTERDAY + 'T00:00:00Z').getTime();
         const d1 = new Date(fetchedDate + 'T00:00:00Z').getTime();
         const diff = (d0 - d1) / (24 * 3600 * 1000);
         return diff >= 0 && diff < days;
@@ -165,11 +172,11 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       function applyFilter() {
         let visible = 0;
         const catCounts = { all: 0 };
-        const perCounts = { today: 0, '3d': 0, '7d': 0, '30d': 0 };
+        const perCounts = { yesterday: 0, '3d': 0, '7d': 0, '30d': 0 };
         rows.forEach(r => {
           const fd = r.getAttribute('data-fetched-date') || '';
           const cats = (r.getAttribute('data-categories') || '').split(',').filter(Boolean);
-          for (const p of ['today', '3d', '7d', '30d']) if (inPeriod(fd, p)) perCounts[p]++;
+          for (const p of ['yesterday', '3d', '7d', '30d']) if (inPeriod(fd, p)) perCounts[p]++;
           const periodOK = inPeriod(fd, activePeriod);
           const catOK = activeCategory === 'all' || cats.includes(activeCategory);
           const show = periodOK && catOK;
