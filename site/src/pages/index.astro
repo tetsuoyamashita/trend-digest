@@ -302,20 +302,29 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       --pagefind-ui-border-radius: 3px;
       --pagefind-ui-font: var(--font-sans);
       --pagefind-ui-scale: 0.75;
+      background: var(--bg-elev);
     }
-    .search-slot .pagefind-ui__search-input {
+    .search-slot .pagefind-ui__form,
+    .search-slot .pagefind-ui__drawer,
+    .search-slot form {
+      background: var(--bg-elev) !important;
+    }
+    .search-slot .pagefind-ui__search-input,
+    .search-slot input[type="text"],
+    .search-slot input {
       padding: 4px 8px 4px 28px !important;
       font-size: 12px !important;
       background: var(--bg-elev) !important;
       color: var(--fg) !important;
       border: 1px solid var(--border) !important;
       height: 28px !important;
+      box-shadow: none !important;
     }
     .search-slot .pagefind-ui__form::before { width: 28px !important; height: 28px !important; }
 
     .layout {
       display: grid;
-      grid-template-columns: 1fr 540px;
+      grid-template-columns: 1fr minmax(540px, 50vw);
       height: calc(100vh - 110px);
       gap: 0;
     }
