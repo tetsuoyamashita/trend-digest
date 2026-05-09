@@ -418,6 +418,41 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       const closeBtn = document.getElementById('p-close');
       if (closeBtn) closeBtn.addEventListener('click', closePanel);
 
+      // Swipe-to-close: 左端 50px 以内から右にスワイプ → 100px 以上で close
+      if (panelEl) {
+        let startX = 0, startY = 0, tracking = false;
+        panelEl.addEventListener('touchstart', e => {
+          if (!isSp() || !panelEl.classList.contains('open')) return;
+          const t = e.touches[0];
+          if (t.clientX > 50) return;
+          startX = t.clientX;
+          startY = t.clientY;
+          tracking = true;
+          panelEl.classList.add('dragging');
+        }, { passive: true });
+        panelEl.addEventListener('touchmove', e => {
+          if (!tracking) return;
+          const t = e.touches[0];
+          const dx = t.clientX - startX;
+          const dy = Math.abs(t.clientY - startY);
+          if (dy > 30 && dx < 30) {
+            tracking = false;
+            panelEl.classList.remove('dragging');
+            panelEl.style.transform = '';
+            return;
+          }
+          if (dx > 0) panelEl.style.transform = 'translateX(' + dx + 'px)';
+        }, { passive: true });
+        panelEl.addEventListener('touchend', e => {
+          if (!tracking) return;
+          tracking = false;
+          panelEl.classList.remove('dragging');
+          const finalDx = e.changedTouches[0].clientX - startX;
+          panelEl.style.transform = '';
+          if (finalDx > 100) closePanel();
+        });
+      }
+
       rows.forEach(r => r.addEventListener('click', () => {
         selectRow(r);
         if (isSp()) openPanel();
@@ -685,16 +720,18 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       .list { border-right: none; }
       .row {
         height: 44px; /* tap-target */
-        padding: 0 10px;
-        gap: 6px;
+        padding: 0 8px 0 2px;
+        gap: 4px;
       }
-      .col-num, .col-sep { display: none; } /* save horizontal real estate */
+      .col-num, .col-sep { display: none; }
       .col-cats { gap: 2px; }
       .cat-tag { font-size: 11px; }
-      .star-btn {
-        width: 36px; height: 36px;
+      .row .star-btn {
+        width: 28px; height: 44px;
         display: inline-flex; align-items: center; justify-content: center;
-        font-size: 18px;
+        font-size: 16px;
+        margin: 0;
+        padding: 0;
       }
 
       /* panel becomes full-screen overlay, hidden by default */
@@ -709,6 +746,7 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
         overflow-y: auto;
       }
       .panel.open { transform: translateX(0); }
+      .panel.dragging { transition: none; }
       .panel-inner { padding: 12px 14px 24px; }
       .panel-close-btn { display: inline-flex; }
       .panel-title { font-size: 15px; }
