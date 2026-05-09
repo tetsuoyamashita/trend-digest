@@ -115,6 +115,7 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
     <aside class="panel" id="panel" aria-live="polite">
       <div class="panel-inner">
         <div class="panel-title-row">
+          <button type="button" class="panel-close-btn" id="p-close" aria-label="リストに戻る" title="リストに戻る">←</button>
           <button type="button" class="star-btn star-btn-panel" id="p-star" aria-label="重要フラグ" title="重要フラグ ON/OFF" hidden>☆</button>
           <h1 class="panel-title" id="p-title">記事を選択してください</h1>
         </div>
@@ -408,12 +409,26 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
         });
       }
 
-      rows.forEach(r => r.addEventListener('click', () => selectRow(r)));
+      // SP overlay: 768px 以下では panel が full overlay。row タップで open、戻るボタンで close
+      const SP_BREAKPOINT = 768;
+      const panelEl = document.getElementById('panel');
+      function isSp() { return window.innerWidth < SP_BREAKPOINT; }
+      function openPanel() { if (panelEl) panelEl.classList.add('open'); }
+      function closePanel() { if (panelEl) panelEl.classList.remove('open'); }
+      const closeBtn = document.getElementById('p-close');
+      if (closeBtn) closeBtn.addEventListener('click', closePanel);
+
+      rows.forEach(r => r.addEventListener('click', () => {
+        selectRow(r);
+        if (isSp()) openPanel();
+      }));
 
       applyFilter();
       const firstVisible = rows.find(r => r.style.display !== 'none');
+      // 初回 panel populate のみ。SP では明示的に row タップしないと open しない
       if (firstVisible) selectRow(firstVisible);
       else if (rows[0]) selectRow(rows[0]);
+      if (isSp()) closePanel();
 
       document.addEventListener('keydown', e => {
         if (e.target instanceof HTMLInputElement) return;
@@ -614,5 +629,89 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
     .panel-long p { margin: 0 0 12px; }
     .panel-long p:last-child { margin-bottom: 0; }
     .panel-long strong { color: var(--fg-strong); font-weight: 600; }
+
+    .panel-close-btn {
+      display: none; /* PC では非表示、SP のみ表示 */
+      flex: 0 0 auto;
+      width: 36px; height: 36px;
+      align-items: center; justify-content: center;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--fg);
+      font-family: var(--font-sans);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0;
+    }
+    .panel-close-btn:hover { background: var(--bg); color: var(--fg-strong); }
+
+    /* === Mobile / SP layout === */
+    @media (max-width: 768px) {
+      .topbar { padding: 6px 10px; }
+      .topbar-row { gap: 6px; }
+      .logo { font-size: 14px; }
+      .meta { font-size: 11px; }
+
+      /* filter rows are horizontally scrollable on mobile */
+      .topbar-row.filter-row,
+      .topbar-row.category-row {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .topbar-row.filter-row::-webkit-scrollbar,
+      .topbar-row.category-row::-webkit-scrollbar { display: none; }
+      .period-pills { display: inline-flex; flex-shrink: 0; }
+      .pill { padding: 6px 10px; font-size: 13px; }
+      .pill.cat-pill { padding: 4px 8px; }
+      .important-filter {
+        margin-left: 0;
+        padding: 6px 10px;
+        font-size: 12px;
+        flex-shrink: 0;
+      }
+      .search-slot { width: 180px; flex-shrink: 0; }
+
+      /* layout becomes single-pane: list takes full width */
+      .layout {
+        grid-template-columns: 1fr;
+        height: calc(100dvh - 100px);
+      }
+      .list { border-right: none; }
+      .row {
+        height: 44px; /* tap-target */
+        padding: 0 10px;
+        gap: 6px;
+      }
+      .col-num, .col-sep { display: none; } /* save horizontal real estate */
+      .col-cats { gap: 2px; }
+      .cat-tag { font-size: 11px; }
+      .star-btn {
+        width: 36px; height: 36px;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-size: 18px;
+      }
+
+      /* panel becomes full-screen overlay, hidden by default */
+      .panel {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        transform: translateX(100%);
+        transition: transform 0.2s ease;
+        will-change: transform;
+        background: var(--bg-elev);
+        overflow-y: auto;
+      }
+      .panel.open { transform: translateX(0); }
+      .panel-inner { padding: 12px 14px 24px; }
+      .panel-close-btn { display: inline-flex; }
+      .panel-title { font-size: 15px; }
+      .panel-meta { font-size: 11px; gap: 4px; }
+      .panel-source-link { font-size: 11px; }
+      .panel-summary { font-size: 14px; }
+      .panel-long { font-size: 13px; padding: 10px 12px; }
+    }
   </style>
 </Layout>
