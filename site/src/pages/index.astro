@@ -5,8 +5,10 @@ import articlesData from '../data/articles.sample.json';
 interface Article {
   id: string;
   title: string;
+  title_ja?: string;
   url: string;
   summary_ja: string;
+  summary_long_ja?: string;
   categories: string[];
   source_media: string;
   source_feed?: string;
@@ -75,8 +77,10 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
           class="row"
           data-id={a.id}
           data-title={a.title}
+          data-title-ja={a.title_ja ?? ''}
           data-url={a.url}
           data-summary={a.summary_ja}
+          data-summary-long={a.summary_long_ja ?? ''}
           data-categories={a.categories.join(',')}
           data-source-media={a.source_media}
           data-source-feed={a.source_feed ?? ''}
@@ -86,7 +90,7 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
         >
           <span class="col-num">[{String(i + 1).padStart(3, '0')}]</span>
           <span class="col-sep">│</span>
-          <span class="col-title">{a.title}</span>
+          <span class="col-title">{a.title_ja || a.title}</span>
           <span class="col-cats">
             {a.categories.map(c => (
               <span class={'cat-tag cat-' + c}>{displayCat(c)}</span>
@@ -108,9 +112,13 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
           <span id="p-lang">—</span>
           <span class="dot">·</span>
           <span id="p-cats" class="panel-cats"></span>
+          <span class="dot">·</span>
+          <a id="p-source-link" class="panel-source-link" href="#" target="_blank" rel="noopener">原文リンク ↗</a>
         </div>
         <hr class="panel-divider" />
         <div class="panel-summary" id="p-summary">左のリストから記事を選択すると、ここに詳細要約が表示されます。</div>
+        <button class="panel-expand-btn" id="p-expand" type="button" aria-expanded="false" aria-controls="p-long" hidden>▼ 原文を読む（詳細要約を表示）</button>
+        <div class="panel-long" id="p-long" hidden></div>
       </div>
     </aside>
   </main>
@@ -205,7 +213,7 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
         rows.forEach(r => r.classList.remove('selected'));
         row.classList.add('selected');
         const get = k => row.getAttribute('data-' + k) || '';
-        document.getElementById('p-title').textContent = get('title') || '(no title)';
+        document.getElementById('p-title').textContent = (get('title-ja') || get('title')) || '(no title)';
         document.getElementById('p-source-media').textContent = get('source-media') || '—';
         document.getElementById('p-source-feed').textContent = get('source-feed') || '—';
         document.getElementById('p-fetched-date').textContent = get('fetched-date') || '—';
@@ -220,6 +228,26 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
         });
         const summaryEl = document.getElementById('p-summary');
         summaryEl.innerHTML = renderSummary(get('summary'));
+
+        const url = get('url') || '';
+        const link = document.getElementById('p-source-link');
+        if (url) { link.href = url; link.style.display = ''; }
+        else { link.removeAttribute('href'); link.style.display = 'none'; }
+
+        const longRaw = get('summary-long') || '';
+        const longEl = document.getElementById('p-long');
+        const btn = document.getElementById('p-expand');
+        if (longRaw) {
+          longEl.innerHTML = renderLongSummary(longRaw);
+          btn.hidden = false;
+          btn.setAttribute('aria-expanded', 'false');
+          btn.textContent = '▼ 原文を読む（詳細要約を表示）';
+          longEl.hidden = true;
+        } else {
+          longEl.innerHTML = '';
+          btn.hidden = true;
+          longEl.hidden = true;
+        }
       }
 
       // Markdown lite: bullet lines starting with "* " or "- " => <ul><li>, **bold**, line breaks
@@ -256,6 +284,23 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
         }
         flushBullets(); flushPara();
         return out.join('');
+      }
+
+      function renderLongSummary(raw) {
+        if (!raw) return '';
+        return raw.split(/\n{2,}/).map(p => p.trim()).filter(Boolean)
+          .map(p => '<p>' + p.split(/\r?\n/).map(inlineFormat).join('<br>') + '</p>').join('');
+      }
+
+      const expandBtn = document.getElementById('p-expand');
+      if (expandBtn) {
+        expandBtn.addEventListener('click', () => {
+          const longEl = document.getElementById('p-long');
+          const open = !longEl.hidden;
+          longEl.hidden = open;
+          expandBtn.setAttribute('aria-expanded', String(!open));
+          expandBtn.textContent = open ? '▼ 原文を読む（詳細要約を表示）' : '▲ 詳細要約を閉じる';
+        });
       }
 
       rows.forEach(r => r.addEventListener('click', () => selectRow(r)));
@@ -324,23 +369,25 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       cursor: pointer;
       border-left: 3px solid transparent;
       white-space: nowrap; overflow: hidden;
+      font-size: 14px;
     }
     .row:hover { background: var(--bg-row-hover); }
     .row.selected { background: var(--bg-row-selected); border-left-color: var(--accent); }
-    .col-num { color: var(--fg-dim); flex: 0 0 auto; }
-    .col-sep { color: var(--border); flex: 0 0 auto; }
+    .col-num { color: var(--fg-dim); flex: 0 0 auto; font-family: var(--font-mono); }
+    .col-sep { color: var(--border); flex: 0 0 auto; font-family: var(--font-mono); }
     .col-title {
       flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; color: var(--fg);
       font-family: var(--font-sans);
+      font-size: 14px;
     }
-    .col-cats { flex: 0 0 auto; display: flex; gap: 4px; }
+    .col-cats { flex: 0 0 auto; display: flex; gap: 4px; font-family: var(--font-mono); }
 
     .panel { background: var(--bg-elev); overflow-y: auto; }
     .panel-inner { padding: 16px 20px; }
     .panel-title {
       margin: 0 0 8px;
       font-family: var(--font-sans);
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       color: var(--fg-strong);
       line-height: 1.5;
@@ -352,7 +399,14 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       font-family: var(--font-sans); font-size: 12px;
     }
     .panel-meta .dot { color: var(--fg-dim); }
-    .panel-cats { display: inline-flex; gap: 6px; }
+    .panel-cats { display: inline-flex; gap: 6px; font-family: var(--font-mono); }
+    .panel-source-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-family: var(--font-sans);
+      font-size: 12px;
+    }
+    .panel-source-link:hover { text-decoration: underline; }
     .panel-divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
     .panel-summary {
       color: var(--fg);
@@ -366,5 +420,42 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
     .panel-summary li:last-child { margin-bottom: 0; }
     .panel-summary strong { color: var(--fg-strong); font-weight: 600; }
     .panel-summary .muted { color: var(--fg-muted); font-style: normal; }
+    .panel-expand-btn {
+      margin-top: 16px;
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--fg-muted);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      padding: 6px 10px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+    .panel-expand-btn:hover {
+      background: var(--bg);
+      color: var(--fg);
+      border-color: var(--accent);
+    }
+    .panel-expand-btn[aria-expanded="true"] {
+      background: var(--bg);
+      color: var(--fg);
+      border-color: var(--accent);
+    }
+    .panel-long {
+      margin-top: 12px;
+      padding: 12px 14px;
+      background: var(--bg);
+      border-left: 3px solid var(--accent);
+      border-radius: 3px;
+      color: var(--fg);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .panel-long p { margin: 0 0 12px; }
+    .panel-long p:last-child { margin-bottom: 0; }
+    .panel-long strong { color: var(--fg-strong); font-weight: 600; }
   </style>
 </Layout>

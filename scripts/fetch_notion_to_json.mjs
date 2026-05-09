@@ -57,8 +57,10 @@ function pageToArticle(p) {
   return {
     id: p.id,
     title: rich(props['タイトル']),
+    title_ja: rich(props['タイトル_日本語']),
     url,
     summary_ja: rich(props['要約']),
+    summary_long_ja: rich(props['詳細要約']),
     categories: (props['カテゴリ']?.multi_select || []).map(s => s.name),
     source_media: rich(props['ソースメディア']),
     source_feed: rich(props['Source Feed']),

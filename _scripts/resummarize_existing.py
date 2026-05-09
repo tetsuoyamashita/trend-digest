@@ -1,5 +1,6 @@
 """
-既存 Notion 記事を v0.3.0 (markdown bullet 形式) で再要約 + update
+既存 Notion 記事を v0.4.0 で再要約 + update
+v0.4.0 出力: title_ja (日本語タイトル) / summary_ja (短 bullet) / summary_long_ja (長文 paragraph)
 
 実行:
   cd C:/Users/yamas/ClaudeCode/trend-digest
@@ -9,7 +10,7 @@
 オプション:
   --mode dry-run | full
   --limit N (dry-run のみ、default 5)
-  --only-old-prompt (prompt_version != v0.3.0 のみ対象、default true)
+  --only-old-prompt (prompt_version != v0.4.0 のみ対象、default true)
 """
 from __future__ import annotations
 
@@ -23,7 +24,7 @@ import urllib.request
 import urllib.error
 from datetime import datetime, timezone
 
-PROMPT_VERSION = 'v0.3.0'
+PROMPT_VERSION = 'v0.4.0'
 DEFAULT_MODEL = 'gpt-5.5'
 NOTION_RPS = 3
 
@@ -31,7 +32,7 @@ NOTION_RPS = 3
 def call_openai(messages: list[dict], model: str, api_key: str) -> dict:
     body = json.dumps({
         'model': model,
-        'max_completion_tokens': 1500,
+        'max_completion_tokens': 2500,
         'messages': messages,
         'response_format': {'type': 'json_object'},
     }).encode()
@@ -40,30 +41,36 @@ def call_openai(messages: list[dict], model: str, api_key: str) -> dict:
         data=body,
         headers={'Content-Type': 'application/json', 'Authorization': f'Bearer {api_key}'},
     )
-    with urllib.request.urlopen(req, timeout=60) as resp:
+    with urllib.request.urlopen(req, timeout=90) as resp:
         data = json.loads(resp.read())
     return json.loads(data['choices'][0]['message']['content'])
 
 
-def llm_resummarize(title: str, host: str, url: str, old_summary: str, model: str, api_key: str) -> str:
+def llm_resummarize(title: str, host: str, url: str, old_summary: str, model: str, api_key: str) -> dict:
     system = (
         'You re-summarize an existing article record for a Japanese executive consultant (山下) '
-        'running a SaaS-focused consulting firm. Produce a concise Japanese summary in '
-        'Markdown bullet form. Output strict JSON only.'
+        'running a SaaS-focused consulting firm. Produce a Japanese title translation, '
+        'a concise bullet summary, and a long-form detailed summary. Output strict JSON only.'
     )
     user = (
         f'Article metadata:\n'
-        f'- title: {title}\n'
+        f'- original_title: {title}\n'
         f'- url: {url}\n'
         f'- source_host: {host}\n'
-        f'- existing_summary: {old_summary[:600]}\n'
+        f'- existing_summary: {old_summary[:800]}\n'
         f'\nReturn JSON with this exact shape:\n'
         '{\n'
-        '  "summary_ja": "Markdown bullet 形式の日本語要約。1 行目は **太字でリード文** (記事の核心を 1 行)、続けて 3-5 個の bullet で詳細・数値・関係者・SaaS 経営者への含意を記述。各 bullet は \\"* \\" で始める。改行は \\\\n。例: \\"**OpenAI が GPT-6 を発表、推論性能 30% 改善。**\\\\n* context window が 1M -> 2M tokens に拡大\\\\n* 主要 SaaS は API コスト 4 割減を試算\\\\n* ベンダーロックイン議論が再燃\\"。合計 400-700 字。"\n'
+        '  "title_ja": "記事タイトルの日本語訳。原文が日本語ならそのままコピー。50 字以内、体言止めまたは断定形で要点が分かるもの。固有名詞 (会社名/プロダクト名/人名) は原語のまま残してよい。",\n'
+        '  "summary_ja": "Markdown bullet 形式の短い日本語要約。1 行目は **太字でリード文** (記事の核心を 1 行)、続けて 3-5 個の bullet で詳細・数値・関係者・SaaS 経営者への含意を記述。各 bullet は \\"* \\" で始める。改行は \\\\n。例: \\"**OpenAI が GPT-6 を発表、推論性能 30% 改善。**\\\\n* context window が 1M -> 2M tokens に拡大\\\\n* 主要 SaaS は API コスト 4 割減を試算\\\\n* ベンダーロックイン議論が再燃\\"。合計 400-700 字。",\n'
+        '  "summary_long_ja": "長文の詳細要約。Markdown bullet ではなく段落形式 (paragraph)。1000-1600 字。記事の論点・背景・具体数値・関係者の発言・対立軸・市場インパクトを順序立てて記述。山下が原文を読まなくても判断材料として十分なレベルの詳細さ。改行は \\\\n\\\\n で段落区切り、最大 4 段落。"\n'
         '}\n'
     )
     out = call_openai([{'role': 'system', 'content': system}, {'role': 'user', 'content': user}], model, api_key)
-    return out.get('summary_ja') or ''
+    return {
+        'title_ja': out.get('title_ja') or '',
+        'summary_ja': out.get('summary_ja') or '',
+        'summary_long_ja': out.get('summary_long_ja') or '',
+    }
 
 
 def query_all_pages(notion_token: str, db_id: str, only_old: bool) -> list[dict]:
@@ -110,7 +117,19 @@ def get_text(prop: dict) -> str:
     return ''
 
 
-def update_page_summary(notion_token: str, page_id: str, summary_ja: str, model: str) -> None:
+def _rt_chunks(text: str) -> list[dict]:
+    """Notion rich_text の 1 element 上限 2000 字に合わせて分割。"""
+    if not text:
+        return [{'text': {'content': ''}}]
+    chunks: list[dict] = []
+    s = text
+    while s:
+        chunks.append({'text': {'content': s[:1900]}})
+        s = s[1900:]
+    return chunks
+
+
+def update_page_summary(notion_token: str, page_id: str, payload: dict, model: str) -> None:
     headers = {
         'Authorization': f'Bearer {notion_token}',
         'Notion-Version': '2022-06-28',
@@ -118,7 +137,9 @@ def update_page_summary(notion_token: str, page_id: str, summary_ja: str, model:
     }
     body = {
         'properties': {
-            '要約': {'rich_text': [{'text': {'content': summary_ja[:1900]}}]},
+            '要約': {'rich_text': [{'text': {'content': (payload.get('summary_ja') or '')[:1900]}}]},
+            'タイトル_日本語': {'rich_text': [{'text': {'content': (payload.get('title_ja') or '')[:200]}}]},
+            '詳細要約': {'rich_text': _rt_chunks(payload.get('summary_long_ja') or '')},
             'model_version': {'rich_text': [{'text': {'content': model}}]},
             'prompt_version': {'rich_text': [{'text': {'content': PROMPT_VERSION}}]},
             '処理日': {'date': {'start': datetime.now(timezone.utc).isoformat()}},
@@ -176,10 +197,10 @@ def main():
         except Exception:
             pass
         try:
-            new_summary = llm_resummarize(title, host, url, old_summary, args.model, openai_key)
-            if not new_summary:
+            payload = llm_resummarize(title, host, url, old_summary, args.model, openai_key)
+            if not payload.get('summary_ja'):
                 raise RuntimeError('empty summary returned')
-            update_page_summary(notion_token, page_id, new_summary, args.model)
+            update_page_summary(notion_token, page_id, payload, args.model)
             successes += 1
             if i % 5 == 0 or i == len(pages) - 1:
                 elapsed = time.time() - started
