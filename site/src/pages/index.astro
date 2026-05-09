@@ -463,6 +463,8 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       background: transparent; border: none; padding: 2px 6px; color: var(--fg-muted);
       font-family: var(--font-mono); font-size: var(--font-size); cursor: pointer; line-height: 1.4;
       border-radius: 0;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .pill:hover { color: var(--fg); }
     .pill.active { color: var(--fg-strong); background: var(--accent-soft); }
@@ -662,9 +664,11 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       }
       .topbar-row.filter-row::-webkit-scrollbar,
       .topbar-row.category-row::-webkit-scrollbar { display: none; }
-      .period-pills { display: inline-flex; flex-shrink: 0; }
-      .pill { padding: 6px 10px; font-size: 13px; }
-      .pill.cat-pill { padding: 4px 8px; }
+      .period-pills { display: inline-flex; flex-shrink: 0; gap: 2px; }
+      .topbar-row.category-row { gap: 2px; }
+      .pill { padding: 4px 6px; font-size: 12px; }
+      .pill.cat-pill { padding: 3px 5px; font-size: 11px; }
+      .pill-count { font-size: 10px; }
       .important-filter {
         margin-left: 0;
         padding: 6px 10px;
