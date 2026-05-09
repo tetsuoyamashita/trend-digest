@@ -82,6 +82,48 @@ const buildTime = new Date().toISOString();
     .cat-地政学 { color: var(--cat-geopolitics); }
     .cat-消費者 { color: var(--cat-consumer); }
     .cat-アカデミア { color: var(--cat-academia); }
+
+    /* Pagefind UI overrides — must be global (Pagefind injects DOM at runtime) */
+    .search-slot .pagefind-ui {
+      --pagefind-ui-primary: var(--accent);
+      --pagefind-ui-text: var(--fg);
+      --pagefind-ui-background: var(--bg-elev);
+      --pagefind-ui-border: var(--border);
+      --pagefind-ui-tag: var(--bg);
+      --pagefind-ui-border-radius: 3px;
+      --pagefind-ui-font: var(--font-sans);
+      --pagefind-ui-scale: 0.75;
+      background: var(--bg-elev);
+    }
+    .search-slot .pagefind-ui__form,
+    .search-slot .pagefind-ui__drawer,
+    .search-slot form {
+      background: var(--bg-elev) !important;
+    }
+    .search-slot .pagefind-ui__search-input,
+    .search-slot input {
+      padding: 4px 8px 4px 28px !important;
+      font-size: 12px !important;
+      background: var(--bg-elev) !important;
+      color: var(--fg) !important;
+      border: 1px solid var(--border) !important;
+      height: 28px !important;
+      box-shadow: none !important;
+      border-radius: 3px !important;
+    }
+    .search-slot .pagefind-ui__form::before {
+      width: 28px !important;
+      height: 28px !important;
+      top: 6px !important;
+      left: 6px !important;
+    }
+    .search-slot .pagefind-ui__search-clear {
+      height: 22px !important;
+      padding: 0 8px !important;
+      top: 3px !important;
+      right: 3px !important;
+      background: transparent !important;
+    }
   </style>
 </head>
 <body data-build-time={buildTime}>

@@ -15,6 +15,13 @@ interface Article {
 }
 
 const CATEGORIES = ['AI/ML', 'テック', '経営・戦略', 'SU・VC', '投資・マーケット', '政策・規制', '地政学', '消費者', 'アカデミア'];
+const CAT_DISPLAY: Record<string, string> = {
+  '経営・戦略': '経営',
+  'SU・VC': 'VC',
+  '投資・マーケット': '投資',
+  '政策・規制': '政策',
+};
+const displayCat = (c: string) => CAT_DISPLAY[c] ?? c;
 const PERIODS = [
   { id: 'today', label: '今日' },
   { id: '3d',    label: '3日' },
@@ -55,7 +62,7 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       <button class="pill cat-pill active" data-category="all">[All <span class="pill-count" data-count-cat="all">{totalAll}</span>]</button>
       {CATEGORIES.map(c => (
         <button class={'pill cat-pill cat-' + c} data-category={c}>
-          [{c} <span class="pill-count" data-count-cat={c}>{countCategory(c)}</span>]
+          [{displayCat(c)} <span class="pill-count" data-count-cat={c}>{countCategory(c)}</span>]
         </button>
       ))}
     </div>
@@ -79,10 +86,10 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
         >
           <span class="col-num">[{String(i + 1).padStart(3, '0')}]</span>
           <span class="col-sep">│</span>
-          <span class="col-summary">{a.summary_ja}</span>
+          <span class="col-title">{a.title}</span>
           <span class="col-cats">
             {a.categories.map(c => (
-              <span class={'cat-tag cat-' + c}>{c}</span>
+              <span class={'cat-tag cat-' + c}>{displayCat(c)}</span>
             ))}
           </span>
         </div>
@@ -104,7 +111,6 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
         </div>
         <hr class="panel-divider" />
         <div class="panel-summary" id="p-summary">左のリストから記事を選択すると、ここに詳細要約が表示されます。</div>
-        <a class="panel-link" id="p-link" href="#" target="_blank" rel="noopener">原文を読む →</a>
       </div>
     </aside>
   </main>
@@ -117,6 +123,14 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
           new window.PagefindUI({ element: '#search', showSubResults: false, resetStyles: false });
         }
       } catch (e) {}
+
+      const CAT_DISPLAY = {
+        '経営・戦略': '経営',
+        'SU・VC': 'VC',
+        '投資・マーケット': '投資',
+        '政策・規制': '政策',
+      };
+      const displayCat = c => CAT_DISPLAY[c] || c;
 
       let activePeriod = 'today';
       let activeCategory = 'all';
@@ -201,13 +215,11 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
         (get('categories') || '').split(',').filter(Boolean).forEach(c => {
           const span = document.createElement('span');
           span.className = 'cat-tag cat-' + c;
-          span.textContent = c;
+          span.textContent = displayCat(c);
           catsEl.appendChild(span);
         });
         const summaryEl = document.getElementById('p-summary');
         summaryEl.innerHTML = renderSummary(get('summary'));
-        const link = document.getElementById('p-link');
-        link.href = get('url') || '#';
       }
 
       // Markdown lite: bullet lines starting with "* " or "- " => <ul><li>, **bold**, line breaks
@@ -293,34 +305,6 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
     .pill-count { color: var(--fg-dim); }
     .pill.active .pill-count { color: var(--fg-muted); }
     .search-slot { margin-left: auto; width: 240px; }
-    .search-slot .pagefind-ui {
-      --pagefind-ui-primary: var(--accent);
-      --pagefind-ui-text: var(--fg);
-      --pagefind-ui-background: var(--bg-elev);
-      --pagefind-ui-border: var(--border);
-      --pagefind-ui-tag: var(--bg);
-      --pagefind-ui-border-radius: 3px;
-      --pagefind-ui-font: var(--font-sans);
-      --pagefind-ui-scale: 0.75;
-      background: var(--bg-elev);
-    }
-    .search-slot .pagefind-ui__form,
-    .search-slot .pagefind-ui__drawer,
-    .search-slot form {
-      background: var(--bg-elev) !important;
-    }
-    .search-slot .pagefind-ui__search-input,
-    .search-slot input[type="text"],
-    .search-slot input {
-      padding: 4px 8px 4px 28px !important;
-      font-size: 12px !important;
-      background: var(--bg-elev) !important;
-      color: var(--fg) !important;
-      border: 1px solid var(--border) !important;
-      height: 28px !important;
-      box-shadow: none !important;
-    }
-    .search-slot .pagefind-ui__form::before { width: 28px !important; height: 28px !important; }
 
     .layout {
       display: grid;
@@ -345,8 +329,9 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
     .row.selected { background: var(--bg-row-selected); border-left-color: var(--accent); }
     .col-num { color: var(--fg-dim); flex: 0 0 auto; }
     .col-sep { color: var(--border); flex: 0 0 auto; }
-    .col-summary {
+    .col-title {
       flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; color: var(--fg);
+      font-family: var(--font-sans);
     }
     .col-cats { flex: 0 0 auto; display: flex; gap: 4px; }
 
@@ -381,12 +366,5 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
     .panel-summary li:last-child { margin-bottom: 0; }
     .panel-summary strong { color: var(--fg-strong); font-weight: 600; }
     .panel-summary .muted { color: var(--fg-muted); font-style: normal; }
-    .panel-link {
-      display: inline-block; margin-top: 16px;
-      color: var(--accent);
-      font-family: var(--font-sans); font-size: 12px;
-      text-decoration: none;
-    }
-    .panel-link:hover { text-decoration: underline; }
   </style>
 </Layout>
