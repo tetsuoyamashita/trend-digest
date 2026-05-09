@@ -517,11 +517,11 @@ def main() -> int:
     if bot_token and not args.dry_run and not args.skip_slack:
         date_jst = started.astimezone(JST).strftime('%Y-%m-%d')
         if status == 'success':
-            text = f':sunrise: *Trend Digest {date_jst}*\n新規 {notion_inserted} 件 / 取得 {fetched_count} 件\n{dashboard_url}'
+            text = f':sunrise: *Trend Digest {date_jst}*\n新規 {notion_inserted} 件\n{dashboard_url}'
         elif status == 'partial':
-            text = f':warning: *Trend Digest {date_jst}* (一部失敗)\n新規 {notion_inserted} 件 / 取得 {fetched_count} 件 / 失敗 {llm_failed + notion_failed} 件\n{dashboard_url}'
+            text = f':warning: *Trend Digest {date_jst}* (一部失敗)\n新規 {notion_inserted} 件 / 失敗 {llm_failed + notion_failed} 件\n{dashboard_url}'
         else:
-            text = f':rotating_light: *Trend Digest {date_jst}* 失敗\n失敗 {llm_failed + notion_failed} 件 / 取得 {fetched_count} 件\n{dashboard_url}'
+            text = f':rotating_light: *Trend Digest {date_jst}* 失敗\n失敗 {llm_failed + notion_failed} 件\n{dashboard_url}'
         try:
             slack_post(bot_token, channel, text)
             slack_sent = True
