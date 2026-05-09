@@ -115,8 +115,8 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
     <aside class="panel" id="panel" aria-live="polite">
       <div class="panel-inner">
         <div class="panel-title-row">
-          <h1 class="panel-title" id="p-title">記事を選択してください</h1>
           <button type="button" class="star-btn star-btn-panel" id="p-star" aria-label="重要フラグ" title="重要フラグ ON/OFF" hidden>☆</button>
+          <h1 class="panel-title" id="p-title">記事を選択してください</h1>
         </div>
         <div class="panel-meta" id="p-meta">
           <span id="p-source-media">—</span>
@@ -467,6 +467,7 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
     .pill.active .pill-count { color: var(--fg-muted); }
 
     .important-filter {
+      margin-left: auto;
       display: inline-flex; align-items: center; gap: 4px;
       padding: 2px 8px;
       font-family: var(--font-mono); font-size: 13px;
