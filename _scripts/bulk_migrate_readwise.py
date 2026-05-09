@@ -138,7 +138,7 @@ def llm_classify_summarize(record: dict, model: str, api_key: str) -> dict:
         f'\nReturn JSON with this exact shape:\n'
         '{\n'
         '  "categories": ["ai_ml" | "tech" | "mgmt" | "startup_vc" | "invest" | "policy" | "geopolitics" | "consumer" | "academia", ...],  // 1-3 items\n'
-        '  "summary_ja": "400-700 字の日本語要約 (背景・主要事実・数値・関係者・含意を網羅し、経営コンサル/SaaS 経営者の戦略判断に使える視点を必ず含める。冒頭一文に短いリード、続けて詳細、最後に示唆の構成)",\n'
+        '  "summary_ja": "Markdown bullet 形式の日本語要約。1 行目は **太字でリード文** (記事の核心を 1 行)、続けて 3-5 個の bullet で詳細・数値・関係者・SaaS 経営者への含意を記述。各 bullet は \\"* \\" で始める。改行は \\\\n。例: \\"**OpenAI が GPT-6 を発表、推論性能 30% 改善。**\\\\n* context window が 1M -> 2M tokens に拡大\\\\n* 主要 SaaS は API コスト 4 割減を試算\\\\n* ベンダーロックイン議論が再燃\\"。合計 400-700 字。",\n'
         '  "source_lang": "ja" | "en" | "other"\n'
         '}\n'
     )
