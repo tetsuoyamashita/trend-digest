@@ -24,7 +24,7 @@ import urllib.request
 import urllib.error
 from datetime import datetime, timezone
 
-PROMPT_VERSION = 'v0.4.0'
+PROMPT_VERSION = 'v0.5.0'
 DEFAULT_MODEL = 'gpt-5.5'
 NOTION_RPS = 3
 
@@ -48,9 +48,11 @@ def call_openai(messages: list[dict], model: str, api_key: str) -> dict:
 
 def llm_resummarize(title: str, host: str, url: str, old_summary: str, model: str, api_key: str) -> dict:
     system = (
-        'You re-summarize an existing article record for a Japanese executive consultant (山下) '
-        'running a SaaS-focused consulting firm. Produce a Japanese title translation, '
-        'a concise bullet summary, and a long-form detailed summary. Output strict JSON only.'
+        'あなたは日本語ビジネスニュースの要約 AI である。読者は経営判断に使う前提で、'
+        '中立で事実ベースの要約を生成する。読者を二人称で呼ぶときは必ず「あなた」とする。'
+        '読者の職業・業界 (例: SaaS 経営者、コンサルタント) や個人名 (例: 山下) を文中に含めてはならない。'
+        '記事の解釈や示唆も、特定の業界の人間に向けた表現ではなく一般的な経営観点で記述する。'
+        'タイトル日本語訳・短い bullet 要約・長文の paragraph 要約の 3 つを生成し、JSON で出力する。'
     )
     user = (
         f'Article metadata:\n'
@@ -58,11 +60,11 @@ def llm_resummarize(title: str, host: str, url: str, old_summary: str, model: st
         f'- url: {url}\n'
         f'- source_host: {host}\n'
         f'- existing_summary: {old_summary[:800]}\n'
-        f'\nReturn JSON with this exact shape:\n'
+        f'\nReturn JSON with this exact shape (descriptions are guidance, not literal output):\n'
         '{\n'
         '  "title_ja": "記事タイトルの日本語訳。原文が日本語ならそのままコピー。50 字以内、体言止めまたは断定形で要点が分かるもの。固有名詞 (会社名/プロダクト名/人名) は原語のまま残してよい。",\n'
-        '  "summary_ja": "Markdown bullet 形式の短い日本語要約。1 行目は **太字でリード文** (記事の核心を 1 行)、続けて 3-5 個の bullet で詳細・数値・関係者・SaaS 経営者への含意を記述。各 bullet は \\"* \\" で始める。改行は \\\\n。例: \\"**OpenAI が GPT-6 を発表、推論性能 30% 改善。**\\\\n* context window が 1M -> 2M tokens に拡大\\\\n* 主要 SaaS は API コスト 4 割減を試算\\\\n* ベンダーロックイン議論が再燃\\"。合計 400-700 字。",\n'
-        '  "summary_long_ja": "長文の詳細要約。Markdown bullet ではなく段落形式 (paragraph)。1000-1600 字。記事の論点・背景・具体数値・関係者の発言・対立軸・市場インパクトを順序立てて記述。山下が原文を読まなくても判断材料として十分なレベルの詳細さ。改行は \\\\n\\\\n で段落区切り、最大 4 段落。"\n'
+        '  "summary_ja": "Markdown bullet 形式の短い日本語要約。1 行目は **太字でリード文** (記事の核心を 1 行)、続けて 3-5 個の bullet で詳細・数値・関係者・経営判断への示唆を記述。各 bullet は \\"* \\" で始める。改行は \\\\n。例: \\"**OpenAI が GPT-6 を発表、推論性能 30% 改善。**\\\\n* context window が 1M -> 2M tokens に拡大\\\\n* 主要事業者は API コスト 4 割減を試算\\\\n* ベンダーロックイン議論が再燃\\"。合計 400-700 字。読者の業界・職業・個人名は出さない。「あなた」も極力使わず無主語または一般名詞で記述。",\n'
+        '  "summary_long_ja": "長文の詳細要約。Markdown bullet ではなく段落形式 (paragraph)。1000-1600 字。記事の論点・背景・具体数値・関係者の発言・対立軸・市場インパクトを順序立てて記述。原文を読まなくても判断材料として十分なレベルの詳細さ。改行は \\\\n\\\\n で段落区切り、最大 4 段落。読者を呼ぶ場合のみ「あなた」を使い、「山下」「SaaS 経営者」「コンサルタント」「経営者」など職業・個人名・業界限定の呼称は禁止。経営示唆は「事業運営に与える影響」「投資判断における論点」のような中立表現で。"\n'
         '}\n'
     )
     out = call_openai([{'role': 'system', 'content': system}, {'role': 'user', 'content': user}], model, api_key)

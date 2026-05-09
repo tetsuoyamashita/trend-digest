@@ -41,7 +41,7 @@ CATEGORY_DISPLAY = {
     'invest': '投資・マーケット', 'policy': '政策・規制', 'geopolitics': '地政学',
     'consumer': '消費者', 'academia': 'アカデミア',
 }
-PROMPT_VERSION = 'v0.3.0'
+PROMPT_VERSION = 'v0.5.0'
 DEFAULT_MODEL = 'gpt-5.5'
 NOTION_RPS = 3
 NOTION_BATCH = 10
@@ -124,9 +124,11 @@ def llm_classify_summarize(record: dict, model: str, api_key: str) -> dict:
     except Exception:
         pass
     system = (
-        'You are a triage assistant for a Japanese executive consultant (山下) running '
-        'a SaaS-focused consulting firm. Classify the article into 1-3 categories and '
-        'produce a concise Japanese summary. Output strict JSON only.'
+        'あなたは日本語ビジネスニュースの分類・要約 AI である。'
+        '記事を 9 カテゴリのうち 1-3 個に分類し、中立で事実ベースの日本語要約を生成する。'
+        '読者を二人称で呼ぶときは必ず「あなた」とする。'
+        '読者の職業・業界 (例: SaaS 経営者、コンサルタント) や個人名 (例: 山下) を文中に含めてはならない。'
+        '示唆は特定業界向けではなく一般的な経営観点で記述する。Output strict JSON only.'
     )
     user = (
         f'Article metadata:\n'
@@ -135,10 +137,12 @@ def llm_classify_summarize(record: dict, model: str, api_key: str) -> dict:
         f'- existing_summary: {existing}\n'
         f'- url: {url}\n'
         f'- source_host: {host}\n'
-        f'\nReturn JSON with this exact shape:\n'
+        f'\nReturn JSON with this exact shape (descriptions are guidance, not literal output):\n'
         '{\n'
         '  "categories": ["ai_ml" | "tech" | "mgmt" | "startup_vc" | "invest" | "policy" | "geopolitics" | "consumer" | "academia", ...],  // 1-3 items\n'
-        '  "summary_ja": "Markdown bullet 形式の日本語要約。1 行目は **太字でリード文** (記事の核心を 1 行)、続けて 3-5 個の bullet で詳細・数値・関係者・SaaS 経営者への含意を記述。各 bullet は \\"* \\" で始める。改行は \\\\n。例: \\"**OpenAI が GPT-6 を発表、推論性能 30% 改善。**\\\\n* context window が 1M -> 2M tokens に拡大\\\\n* 主要 SaaS は API コスト 4 割減を試算\\\\n* ベンダーロックイン議論が再燃\\"。合計 400-700 字。",\n'
+        '  "title_ja": "記事タイトルの日本語訳。原文が日本語ならそのままコピー。50 字以内、体言止めまたは断定形で要点が分かるもの。固有名詞 (会社名/プロダクト名/人名) は原語のまま残してよい。",\n'
+        '  "summary_ja": "Markdown bullet 形式の短い日本語要約。1 行目は **太字でリード文** (記事の核心を 1 行)、続けて 3-5 個の bullet で詳細・数値・関係者・経営判断への示唆を記述。各 bullet は \\"* \\" で始める。改行は \\\\n。例: \\"**OpenAI が GPT-6 を発表、推論性能 30% 改善。**\\\\n* context window が 1M -> 2M tokens に拡大\\\\n* 主要事業者は API コスト 4 割減を試算\\\\n* ベンダーロックイン議論が再燃\\"。合計 400-700 字。読者の業界・職業・個人名は出さない。「あなた」も極力使わず無主語または一般名詞で記述。",\n'
+        '  "summary_long_ja": "長文の詳細要約。Markdown bullet ではなく段落形式 (paragraph)。1000-1600 字。記事の論点・背景・具体数値・関係者の発言・対立軸・市場インパクトを順序立てて記述。原文を読まなくても判断材料として十分なレベルの詳細さ。改行は \\\\n\\\\n で段落区切り、最大 4 段落。読者を呼ぶ場合のみ「あなた」を使い、「山下」「SaaS 経営者」「コンサルタント」「経営者」など職業・個人名・業界限定の呼称は禁止。",\n'
         '  "source_lang": "ja" | "en" | "other"\n'
         '}\n'
     )
@@ -200,8 +204,19 @@ def insert_notion_article(notion_token: str, db_id: str, record: dict, classific
     if not cat_displays:
         cat_displays = [{'name': 'AI/ML'}]  # fallback
 
+    long_text = classification.get('summary_long_ja') or ''
+    long_chunks = []
+    s = long_text
+    if s:
+        while s:
+            long_chunks.append({'text': {'content': s[:1900]}})
+            s = s[1900:]
+    else:
+        long_chunks = [{'text': {'content': ''}}]
+
     properties = {
         'タイトル': {'title': [{'text': {'content': title[:200]}}]},
+        'タイトル_日本語': {'rich_text': [{'text': {'content': (classification.get('title_ja') or '')[:200]}}]},
         'URL': {'url': url or None},
         'dedup_key': {'rich_text': [{'text': {'content': dedup_key}}]},
         'カテゴリ': {'multi_select': cat_displays},
@@ -211,6 +226,7 @@ def insert_notion_article(notion_token: str, db_id: str, record: dict, classific
         'Source Feed': {'rich_text': [{'text': {'content': record.get('author') or ''}}]},
         '言語': {'select': {'name': classification.get('source_lang', 'other')}},
         '要約': {'rich_text': [{'text': {'content': (classification.get('summary_ja') or '')[:1900]}}]},
+        '詳細要約': {'rich_text': long_chunks},
         'model_version': {'rich_text': [{'text': {'content': model}}]},
         'prompt_version': {'rich_text': [{'text': {'content': PROMPT_VERSION}}]},
     }
