@@ -14,9 +14,13 @@ interface Article {
   source_feed?: string;
   source_lang: string;
   fetched_date: string;
+  important?: boolean;
 }
 
 const CATEGORIES = ['AI/ML', 'テック', '経営・戦略', 'SU・VC', '投資・マーケット', '政策・規制', '地政学', '消費者', 'アカデミア'];
+const CAT_INDEX: Record<string, number> = Object.fromEntries(CATEGORIES.map((c, i) => [c, i]));
+const sortCats = (cats: string[]) =>
+  cats.slice().sort((a, b) => (CAT_INDEX[a] ?? 999) - (CAT_INDEX[b] ?? 999));
 const CAT_DISPLAY: Record<string, string> = {
   'AI/ML': 'AI',
   '経営・戦略': '経営',
@@ -30,6 +34,8 @@ const PERIODS = [
   { id: '3d',        label: '3日' },
   { id: '7d',        label: '7日' },
   { id: '30d',       label: '30日' },
+  { id: '1y',        label: '1年' },
+  { id: 'all',       label: '全期間' },
 ];
 
 const articles: Article[] = (articlesData as Article[])
@@ -59,6 +65,10 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
           </button>
         ))}
       </div>
+      <label class="important-filter" title="重要フラグの記事のみ表示">
+        <input type="checkbox" id="important-only" />
+        <span class="important-filter-icon">★</span> 重要のみ
+      </label>
       <div id="search" class="search-slot"></div>
     </div>
     <div class="topbar-row category-row">
@@ -82,18 +92,20 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
           data-url={a.url}
           data-summary={a.summary_ja}
           data-summary-long={a.summary_long_ja ?? ''}
-          data-categories={a.categories.join(',')}
+          data-categories={sortCats(a.categories).join(',')}
           data-source-media={a.source_media}
           data-source-feed={a.source_feed ?? ''}
           data-source-lang={a.source_lang ?? 'other'}
           data-fetched-date={a.fetched_date ?? ''}
+          data-default-important={a.important ? '1' : '0'}
           data-pagefind-body
         >
+          <button type="button" class="star-btn" data-star-for={a.id} aria-label="重要フラグ" title="重要フラグ ON/OFF">☆</button>
           <span class="col-num">[{String(i + 1).padStart(3, '0')}]</span>
           <span class="col-sep">│</span>
           <span class="col-title">{a.title_ja || a.title}</span>
           <span class="col-cats">
-            {a.categories.map(c => (
+            {sortCats(a.categories).map(c => (
               <span class={'cat-tag cat-' + c}>{displayCat(c)}</span>
             ))}
           </span>
@@ -102,7 +114,10 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
     </section>
     <aside class="panel" id="panel" aria-live="polite">
       <div class="panel-inner">
-        <h1 class="panel-title" id="p-title">記事を選択してください</h1>
+        <div class="panel-title-row">
+          <h1 class="panel-title" id="p-title">記事を選択してください</h1>
+          <button type="button" class="star-btn star-btn-panel" id="p-star" aria-label="重要フラグ" title="重要フラグ ON/OFF" hidden>☆</button>
+        </div>
         <div class="panel-meta" id="p-meta">
           <span id="p-source-media">—</span>
           <span class="dot">·</span>
@@ -142,8 +157,29 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       };
       const displayCat = c => CAT_DISPLAY[c] || c;
 
+      // 重要フラグ管理 (localStorage を真実とし、初期値は Notion DB の checkbox)
+      const IMPORTANT_KEY = 'trend-digest-important-v1';
+      function loadImportant() {
+        try { return JSON.parse(localStorage.getItem(IMPORTANT_KEY) || '{}'); } catch { return {}; }
+      }
+      function saveImportant(map) {
+        try { localStorage.setItem(IMPORTANT_KEY, JSON.stringify(map)); } catch {}
+      }
+      let importantMap = loadImportant();
+      function isImportant(id) {
+        if (!id) return false;
+        if (Object.prototype.hasOwnProperty.call(importantMap, id)) return !!importantMap[id];
+        const row = document.querySelector('.row[data-id="' + CSS.escape(id) + '"]');
+        return row ? row.getAttribute('data-default-important') === '1' : false;
+      }
+      function setImportant(id, value) {
+        importantMap[id] = !!value;
+        saveImportant(importantMap);
+      }
+
       let activePeriod = 'yesterday';
       let activeCategory = 'all';
+      let importantOnly = false;
       const rows = Array.from(document.querySelectorAll('.row'));
 
       function todayJST() {
@@ -160,10 +196,12 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
 
       // 期間は「昨日」を基準にした N 日間 (昨日含む)
       // 例: 3日 = 昨日 / 一昨日 / 3 日前 の 3 日分
+      const PERIOD_DAYS = { '3d': 3, '7d': 7, '30d': 30, '1y': 365 };
       function inPeriod(fetchedDate, periodId) {
+        if (periodId === 'all') return true;
         if (!fetchedDate) return false;
         if (periodId === 'yesterday') return fetchedDate === YESTERDAY;
-        const days = { '3d': 3, '7d': 7, '30d': 30 }[periodId];
+        const days = PERIOD_DAYS[periodId];
         if (!days) return true;
         const d0 = new Date(YESTERDAY + 'T00:00:00Z').getTime();
         const d1 = new Date(fetchedDate + 'T00:00:00Z').getTime();
@@ -171,20 +209,26 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
         return diff >= 0 && diff < days;
       }
 
+      const PERIOD_IDS = ['yesterday', '3d', '7d', '30d', '1y', 'all'];
+
       function applyFilter() {
         let visible = 0;
         const catCounts = { all: 0 };
-        const perCounts = { yesterday: 0, '3d': 0, '7d': 0, '30d': 0 };
+        const perCounts = {};
+        PERIOD_IDS.forEach(p => { perCounts[p] = 0; });
         rows.forEach(r => {
           const fd = r.getAttribute('data-fetched-date') || '';
           const cats = (r.getAttribute('data-categories') || '').split(',').filter(Boolean);
-          for (const p of ['yesterday', '3d', '7d', '30d']) if (inPeriod(fd, p)) perCounts[p]++;
+          const id = r.getAttribute('data-id');
+          const imp = isImportant(id);
+          for (const p of PERIOD_IDS) if (inPeriod(fd, p)) perCounts[p]++;
           const periodOK = inPeriod(fd, activePeriod);
           const catOK = activeCategory === 'all' || cats.includes(activeCategory);
-          const show = periodOK && catOK;
+          const impOK = !importantOnly || imp;
+          const show = periodOK && catOK && impOK;
           r.style.display = show ? '' : 'none';
           if (show) visible++;
-          if (periodOK) {
+          if (periodOK && impOK) {
             catCounts.all++;
             cats.forEach(c => { catCounts[c] = (catCounts[c] || 0) + 1; });
           }
@@ -197,6 +241,52 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
         document.querySelectorAll('[data-count-cat]').forEach(el => {
           const k = el.getAttribute('data-count-cat');
           el.textContent = String(catCounts[k] || 0);
+        });
+      }
+
+      // 初期描画: 各 row の ☆ 状態を localStorage または default で更新
+      function refreshStarBtn(btn, id) {
+        const on = isImportant(id);
+        btn.textContent = on ? '★' : '☆';
+        btn.classList.toggle('on', on);
+        btn.setAttribute('aria-pressed', String(on));
+      }
+      rows.forEach(r => {
+        const id = r.getAttribute('data-id');
+        const btn = r.querySelector('.star-btn');
+        if (btn) {
+          refreshStarBtn(btn, id);
+          btn.addEventListener('click', e => {
+            e.stopPropagation();
+            const next = !isImportant(id);
+            setImportant(id, next);
+            refreshStarBtn(btn, id);
+            const pStar = document.getElementById('p-star');
+            if (pStar && pStar.dataset.id === id) refreshStarBtn(pStar, id);
+            applyFilter();
+          });
+        }
+      });
+
+      const importantOnlyBox = document.getElementById('important-only');
+      if (importantOnlyBox) {
+        importantOnlyBox.addEventListener('change', () => {
+          importantOnly = importantOnlyBox.checked;
+          applyFilter();
+        });
+      }
+
+      const pStarBtn = document.getElementById('p-star');
+      if (pStarBtn) {
+        pStarBtn.addEventListener('click', () => {
+          const id = pStarBtn.dataset.id;
+          if (!id) return;
+          const next = !isImportant(id);
+          setImportant(id, next);
+          refreshStarBtn(pStarBtn, id);
+          const rowBtn = document.querySelector('.row[data-id="' + CSS.escape(id) + '"] .star-btn');
+          if (rowBtn) refreshStarBtn(rowBtn, id);
+          applyFilter();
         });
       }
 
@@ -222,6 +312,7 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
         rows.forEach(r => r.classList.remove('selected'));
         row.classList.add('selected');
         const get = k => row.getAttribute('data-' + k) || '';
+        const id = get('id');
         document.getElementById('p-title').textContent = (get('title-ja') || get('title')) || '(no title)';
         document.getElementById('p-source-media').textContent = get('source-media') || '—';
         document.getElementById('p-source-feed').textContent = get('source-feed') || '—';
@@ -235,6 +326,11 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
           span.textContent = displayCat(c);
           catsEl.appendChild(span);
         });
+        if (pStarBtn) {
+          pStarBtn.dataset.id = id;
+          pStarBtn.hidden = false;
+          refreshStarBtn(pStarBtn, id);
+        }
         const summaryEl = document.getElementById('p-summary');
         summaryEl.innerHTML = renderSummary(get('summary'));
 
@@ -369,7 +465,27 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
     .pill.cat-pill.cat-アカデミア { --pill-color: var(--cat-academia); }
     .pill-count { color: var(--fg-dim); }
     .pill.active .pill-count { color: var(--fg-muted); }
-    .search-slot { margin-left: auto; width: 240px; }
+
+    .important-filter {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px;
+      font-family: var(--font-mono); font-size: 13px;
+      color: var(--fg-muted);
+      cursor: pointer;
+      user-select: none;
+      border: 1px solid transparent;
+      border-radius: 3px;
+    }
+    .important-filter:hover { color: var(--fg); }
+    .important-filter input { margin: 0; cursor: pointer; }
+    .important-filter:has(input:checked) {
+      color: #f0c845;
+      border-color: var(--border);
+      background: var(--bg-elev);
+    }
+    .important-filter-icon { color: #f0c845; }
+
+    .search-slot { width: 240px; }
 
     .layout {
       display: grid;
@@ -402,10 +518,30 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
     }
     .col-cats { flex: 0 0 auto; display: flex; gap: 4px; font-family: var(--font-mono); }
 
+    .star-btn {
+      flex: 0 0 auto;
+      background: transparent;
+      border: none;
+      padding: 0 2px;
+      color: var(--fg-dim);
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      transition: transform 0.1s ease;
+    }
+    .star-btn:hover { color: #f0c845; transform: scale(1.15); }
+    .star-btn.on { color: #f0c845; }
+    .star-btn-panel { font-size: 18px; }
+
     .panel { background: var(--bg-elev); overflow-y: auto; }
     .panel-inner { padding: 16px 20px; }
-    .panel-title {
+    .panel-title-row {
+      display: flex; align-items: flex-start; gap: 8px;
       margin: 0 0 8px;
+    }
+    .panel-title {
+      margin: 0;
+      flex: 1 1 auto;
       font-family: var(--font-sans);
       font-size: 16px;
       font-weight: 700;

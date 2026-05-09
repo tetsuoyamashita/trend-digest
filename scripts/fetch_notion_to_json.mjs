@@ -66,6 +66,7 @@ function pageToArticle(p) {
     source_feed: rich(props['Source Feed']),
     source_lang: props['言語']?.select?.name || 'other',
     fetched_date: props['取得日']?.date?.start || '',
+    important: !!props['重要']?.checkbox,
   };
 }
 
