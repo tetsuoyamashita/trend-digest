@@ -720,19 +720,20 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       .list { border-right: none; }
       .row {
         height: 44px; /* tap-target */
-        padding: 0 8px 0 2px;
-        gap: 4px;
+        padding: 0 8px 0 0;
+        gap: 0;
       }
       .col-num, .col-sep { display: none; }
-      .col-cats { gap: 2px; }
+      .col-cats { gap: 2px; margin-left: 6px; }
       .cat-tag { font-size: 11px; }
       .row .star-btn {
-        width: 28px; height: 44px;
+        width: 22px; height: 44px;
         display: inline-flex; align-items: center; justify-content: center;
         font-size: 16px;
         margin: 0;
         padding: 0;
       }
+      .row .col-title { margin-left: 4px; }
 
       /* panel becomes full-screen overlay, hidden by default */
       .panel {
