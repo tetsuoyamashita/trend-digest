@@ -18,6 +18,7 @@ interface Article {
 
 const CATEGORIES = ['AI/ML', 'テック', '経営・戦略', 'SU・VC', '投資・マーケット', '政策・規制', '地政学', '消費者', 'アカデミア'];
 const CAT_DISPLAY: Record<string, string> = {
+  'AI/ML': 'AI',
   '経営・戦略': '経営',
   'SU・VC': 'VC',
   '投資・マーケット': '投資',
@@ -133,6 +134,7 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       } catch (e) {}
 
       const CAT_DISPLAY = {
+        'AI/ML': 'AI',
         '経営・戦略': '経営',
         'SU・VC': 'VC',
         '投資・マーケット': '投資',
@@ -353,7 +355,18 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
     }
     .pill:hover { color: var(--fg); }
     .pill.active { color: var(--fg-strong); background: var(--accent-soft); }
-    .pill.cat-pill { padding: 1px 4px; }
+    .pill.cat-pill { padding: 1px 4px; color: var(--pill-color, var(--fg-muted)); }
+    .pill.cat-pill:hover { color: var(--pill-color, var(--fg)); filter: brightness(1.15); }
+    .pill.cat-pill.active { color: var(--pill-color, var(--fg-strong)); background: var(--accent-soft); }
+    .pill.cat-pill.cat-AI\/ML { --pill-color: var(--cat-ai_ml); }
+    .pill.cat-pill.cat-テック { --pill-color: var(--cat-tech); }
+    .pill.cat-pill.cat-経営・戦略 { --pill-color: var(--cat-mgmt); }
+    .pill.cat-pill.cat-SU・VC { --pill-color: var(--cat-startup_vc); }
+    .pill.cat-pill.cat-投資・マーケット { --pill-color: var(--cat-invest); }
+    .pill.cat-pill.cat-政策・規制 { --pill-color: var(--cat-policy); }
+    .pill.cat-pill.cat-地政学 { --pill-color: var(--cat-geopolitics); }
+    .pill.cat-pill.cat-消費者 { --pill-color: var(--cat-consumer); }
+    .pill.cat-pill.cat-アカデミア { --pill-color: var(--cat-academia); }
     .pill-count { color: var(--fg-dim); }
     .pill.active .pill-count { color: var(--fg-muted); }
     .search-slot { margin-left: auto; width: 240px; }
