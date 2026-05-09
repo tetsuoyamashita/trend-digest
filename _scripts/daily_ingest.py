@@ -272,13 +272,14 @@ def insert_article(notion_token: str, db_id: str, record: dict, classification: 
     if not cat_displays:
         cat_displays = [{'name': 'AI/ML'}]
 
+    today_jst = datetime.now(timezone.utc).astimezone(JST).strftime('%Y-%m-%d')
     properties = {
         'タイトル': {'title': [{'text': {'content': title[:200]}}]},
         'タイトル_日本語': {'rich_text': [{'text': {'content': (classification.get('title_ja') or '')[:200]}}]},
         'URL': {'url': url or None},
         'dedup_key': {'rich_text': [{'text': {'content': dedup_key}}]},
         'カテゴリ': {'multi_select': cat_displays},
-        '取得日': {'date': {'start': (record.get('created_at') or datetime.now(timezone.utc).isoformat())[:10]}},
+        '取得日': {'date': {'start': today_jst}},
         '処理日': {'date': {'start': datetime.now(timezone.utc).isoformat()}},
         'ソースメディア': {'rich_text': [{'text': {'content': host}}]},
         'Source Feed': {'rich_text': [{'text': {'content': record.get('author') or ''}}]},
