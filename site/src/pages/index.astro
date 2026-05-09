@@ -115,9 +115,10 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
     <aside class="panel" id="panel" aria-live="polite">
       <div class="panel-inner">
         <div class="panel-title-row">
-          <button type="button" class="panel-close-btn" id="p-close" aria-label="リストに戻る" title="リストに戻る">←</button>
+          <button type="button" class="panel-nav-btn" id="p-prev" aria-label="前の記事" title="前の記事">←</button>
           <button type="button" class="star-btn star-btn-panel" id="p-star" aria-label="重要フラグ" title="重要フラグ ON/OFF" hidden>☆</button>
           <h1 class="panel-title" id="p-title">記事を選択してください</h1>
+          <button type="button" class="panel-nav-btn" id="p-next" aria-label="次の記事" title="次の記事">→</button>
         </div>
         <div class="panel-meta" id="p-meta">
           <span id="p-source-media">—</span>
@@ -415,8 +416,18 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       function isSp() { return window.innerWidth < SP_BREAKPOINT; }
       function openPanel() { if (panelEl) panelEl.classList.add('open'); }
       function closePanel() { if (panelEl) panelEl.classList.remove('open'); }
-      const closeBtn = document.getElementById('p-close');
-      if (closeBtn) closeBtn.addEventListener('click', closePanel);
+      function navRelative(delta) {
+        const visible = rows.filter(r => r.style.display !== 'none');
+        const cur = visible.findIndex(r => r.classList.contains('selected'));
+        const next = cur + delta;
+        if (next < 0 || next >= visible.length) return;
+        selectRow(visible[next]);
+        visible[next].scrollIntoView({ block: 'nearest' });
+      }
+      const prevBtn = document.getElementById('p-prev');
+      const nextBtn = document.getElementById('p-next');
+      if (prevBtn) prevBtn.addEventListener('click', () => navRelative(-1));
+      if (nextBtn) nextBtn.addEventListener('click', () => navRelative(1));
 
       // Swipe-to-close: 左端 50px 以内から右にスワイプ → 100px 以上で close
       if (panelEl) {
@@ -667,7 +678,7 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
     .panel-long p:last-child { margin-bottom: 0; }
     .panel-long strong { color: var(--fg-strong); font-weight: 600; }
 
-    .panel-close-btn {
+    .panel-nav-btn {
       display: none; /* PC では非表示、SP のみ表示 */
       flex: 0 0 auto;
       width: 36px; height: 36px;
@@ -681,7 +692,7 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       cursor: pointer;
       padding: 0;
     }
-    .panel-close-btn:hover { background: var(--bg); color: var(--fg-strong); }
+    .panel-nav-btn:hover { background: var(--bg); color: var(--fg-strong); }
 
     /* === Mobile / SP layout === */
     @media (max-width: 768px) {
@@ -749,8 +760,9 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
       .panel.open { transform: translateX(0); }
       .panel.dragging { transition: none; }
       .panel-inner { padding: 12px 14px 24px; }
-      .panel-close-btn { display: inline-flex; }
-      .panel-title { font-size: 15px; }
+      .panel-nav-btn { display: inline-flex; }
+      #p-next { margin-left: auto; }
+      .panel-title { font-size: 15px; flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       .panel-meta { font-size: 11px; gap: 4px; }
       .panel-source-link { font-size: 11px; }
       .panel-summary { font-size: 14px; }
