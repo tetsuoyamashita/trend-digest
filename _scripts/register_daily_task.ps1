@@ -23,7 +23,7 @@ $action = New-ScheduledTaskAction -Execute 'wscript.exe' -Argument "`"$vbs`" `"$
 $trigger = New-ScheduledTaskTrigger -Daily -At '6:00am'
 $settings = New-ScheduledTaskSettingsSet `
     -StartWhenAvailable `
-    -ExecutionTimeLimit (New-TimeSpan -Hours 1) `
+    -ExecutionTimeLimit (New-TimeSpan -Hours 2) `
     -RestartCount 1 `
     -RestartInterval (New-TimeSpan -Minutes 10) `
     -DontStopIfGoingOnBatteries `

@@ -111,7 +111,21 @@ def call_openai(messages: list[dict], model: str, api_key: str) -> tuple[dict, d
         try:
             with urllib.request.urlopen(req, timeout=90) as resp:
                 data = json.loads(resp.read())
-            content = json.loads(data['choices'][0]['message']['content'])
+            raw_content = data['choices'][0]['message'].get('content') or ''
+            if not raw_content.strip():
+                last_err = RuntimeError('OpenAI returned empty content')
+                if attempt < 2:
+                    time.sleep(2 ** attempt)
+                    continue
+                raise last_err
+            try:
+                content = json.loads(raw_content)
+            except json.JSONDecodeError as e:
+                last_err = RuntimeError(f'OpenAI JSON parse failed: {e} (head={raw_content[:120]!r})')
+                if attempt < 2:
+                    time.sleep(2 ** attempt)
+                    continue
+                raise last_err
             usage = data.get('usage', {}) or {}
             return content, usage
         except urllib.error.HTTPError as e:
@@ -292,21 +306,31 @@ def insert_article(notion_token: str, db_id: str, record: dict, classification: 
     }
 
     body = {'parent': {'database_id': db_id}, 'properties': properties}
-    req = urllib.request.Request(
-        'https://api.notion.com/v1/pages',
-        data=json.dumps(body).encode(),
-        headers=headers,
-    )
+    last_err: Exception | None = None
     for attempt in range(3):
+        req = urllib.request.Request(
+            'https://api.notion.com/v1/pages',
+            data=json.dumps(body).encode(),
+            headers=headers,
+        )
         try:
             with urllib.request.urlopen(req, timeout=30) as resp:
                 resp.read()
                 return
         except urllib.error.HTTPError as e:
-            if e.code == 429 and attempt < 2:
+            err_body = e.read().decode('utf-8', errors='ignore')[:200]
+            last_err = RuntimeError(f'Notion HTTP {e.code}: {err_body}')
+            if e.code in (429, 500, 502, 503, 504) and attempt < 2:
                 time.sleep(2 ** attempt)
                 continue
-            raise
+            raise last_err
+        except (urllib.error.URLError, socket.timeout) as e:
+            last_err = RuntimeError(f'Notion network: {e}')
+            if attempt < 2:
+                time.sleep(2 ** attempt)
+                continue
+            raise last_err
+    raise last_err  # type: ignore[misc]
 
 
 def write_run_record(notion_token: str, db_runs: str, started_at: datetime, finished_at: datetime,
