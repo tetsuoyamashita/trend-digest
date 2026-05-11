@@ -98,7 +98,7 @@ def fetch_readwise_recent(token: str, since_hours: int) -> list[dict]:
 def call_openai(messages: list[dict], model: str, api_key: str) -> tuple[dict, dict]:
     body = json.dumps({
         'model': model,
-        'max_completion_tokens': 2500,
+        'max_completion_tokens': 4000,
         'messages': messages,
         'response_format': {'type': 'json_object'},
     }).encode()
