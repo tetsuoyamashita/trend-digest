@@ -263,7 +263,7 @@ def _rt_chunks(text: str) -> list[dict]:
     return chunks
 
 
-def insert_article(notion_token: str, db_id: str, record: dict, classification: dict, dedup_key: str, model: str) -> None:
+def insert_article(notion_token: str, db_id: str, record: dict, classification: dict, dedup_key: str, model: str, fetched_date_override: str = '') -> None:
     headers = {
         'Authorization': f'Bearer {notion_token}',
         'Notion-Version': '2022-06-28',
@@ -286,14 +286,14 @@ def insert_article(notion_token: str, db_id: str, record: dict, classification: 
     if not cat_displays:
         cat_displays = [{'name': 'AI/ML'}]
 
-    today_jst = datetime.now(timezone.utc).astimezone(JST).strftime('%Y-%m-%d')
+    fetched_date = fetched_date_override or datetime.now(timezone.utc).astimezone(JST).strftime('%Y-%m-%d')
     properties = {
         'タイトル': {'title': [{'text': {'content': title[:200]}}]},
         'タイトル_日本語': {'rich_text': [{'text': {'content': (classification.get('title_ja') or '')[:200]}}]},
         'URL': {'url': url or None},
         'dedup_key': {'rich_text': [{'text': {'content': dedup_key}}]},
         'カテゴリ': {'multi_select': cat_displays},
-        '取得日': {'date': {'start': today_jst}},
+        '取得日': {'date': {'start': fetched_date}},
         '処理日': {'date': {'start': datetime.now(timezone.utc).isoformat()}},
         'ソースメディア': {'rich_text': [{'text': {'content': host}}]},
         'Source Feed': {'rich_text': [{'text': {'content': record.get('author') or ''}}]},
@@ -384,6 +384,37 @@ def write_run_record(notion_token: str, db_runs: str, started_at: datetime, fini
         print(f'[run-record] failed to write: {e}', file=sys.stderr)
 
 
+def check_today_success(notion_token: str, db_runs: str) -> bool:
+    """今日 (JST) に processing_status=success の run row があれば True。"""
+    today_jst = datetime.now(timezone.utc).astimezone(JST).strftime('%Y-%m-%d')
+    headers = {
+        'Authorization': f'Bearer {notion_token}',
+        'Notion-Version': '2022-06-28',
+        'Content-Type': 'application/json',
+    }
+    body = {
+        'filter': {
+            'and': [
+                {'property': 'started_at', 'date': {'on_or_after': today_jst + 'T00:00:00+09:00'}},
+                {'property': 'processing_status', 'select': {'equals': 'success'}},
+            ]
+        },
+        'page_size': 1,
+    }
+    req = urllib.request.Request(
+        f'https://api.notion.com/v1/databases/{db_runs}/query',
+        data=json.dumps(body).encode(),
+        headers=headers,
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read())
+        return len(data.get('results', [])) > 0
+    except Exception as e:
+        print(f'[check-today] failed (treat as not-run): {e}', file=sys.stderr)
+        return False
+
+
 def slack_post(bot_token: str, channel: str, text: str) -> None:
     body = json.dumps({'channel': channel, 'text': text}).encode()
     req = urllib.request.Request(
@@ -420,6 +451,8 @@ def main() -> int:
     ap.add_argument('--screen-model', default='gpt-5.4-mini')
     ap.add_argument('--full-model', default=DEFAULT_MODEL)
     ap.add_argument('--skip-screen', action='store_true', help='Stage 1 をスキップして全件 full 要約')
+    ap.add_argument('--fetched-date', default='', help='取得日 (YYYY-MM-DD) を override (catch up 用)')
+    ap.add_argument('--force', action='store_true', help='今日成功 run があっても強制実行')
     args = ap.parse_args()
 
     started = datetime.now(timezone.utc)
@@ -432,6 +465,12 @@ def main() -> int:
     channel = os.environ.get('SLACK_AI_DIGEST_CHANNEL', 'ai-digest')
     ops_webhook = os.environ.get('WF_OPS_ERROR_WEBHOOK', '')
     dashboard_url = os.environ.get('DASHBOARD_URL', 'https://tetsuoyamashita.github.io/trend-digest/')
+
+    # 二重起動ガード: 今日成功 run があれば skip (--force で override)
+    if db_runs and not args.force and not args.dry_run:
+        if check_today_success(notion_token, db_runs):
+            print('[guard] today already has a successful run, skipping (use --force to override)', file=sys.stderr)
+            return 0
 
     fetched_count = 0
     dedup_skipped = 0
@@ -512,7 +551,7 @@ def main() -> int:
                 time.sleep(1.0 / NOTION_RPS)
                 continue
             try:
-                insert_article(notion_token, db_articles, rec, classification, rec['_dedup_key'], args.full_model)
+                insert_article(notion_token, db_articles, rec, classification, rec['_dedup_key'], args.full_model, args.fetched_date)
                 notion_inserted += 1
                 if (i + 1) % 5 == 0 or i == len(records) - 1:
                     print(f'  [{i+1}/{len(records)}] inserted={notion_inserted} llm_failed={llm_failed} notion_failed={notion_failed}', file=sys.stderr)

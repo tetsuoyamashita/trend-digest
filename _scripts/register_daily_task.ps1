@@ -20,7 +20,13 @@ foreach ($p in @($dpapiPs1, $vbs, $script, $envTemplate)) {
 $psCmd = "powershell -NoProfile -ExecutionPolicy Bypass -File `"$dpapiPs1`" -EnvTemplate `"$envTemplate`" pythonw `"$script`""
 
 $action = New-ScheduledTaskAction -Execute 'wscript.exe' -Argument "`"$vbs`" `"$psCmd`""
-$trigger = New-ScheduledTaskTrigger -Daily -At '6:00am'
+# Trigger 1: Daily 06:00 JST (通常運用)
+$trigger1 = New-ScheduledTaskTrigger -Daily -At '6:00am'
+# Trigger 2: AtLogOn + 5 分 delay (Windows Update reboot 等で 06:00 を逃した場合のフォールバック)
+# daily_ingest.py 側の --force/Run DB 当日成功 skip ガードで二重実行は防ぐ
+$trigger2 = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
+$trigger2.Delay = 'PT5M'
+$triggers = @($trigger1, $trigger2)
 $settings = New-ScheduledTaskSettingsSet `
     -StartWhenAvailable `
     -ExecutionTimeLimit (New-TimeSpan -Hours 2) `
@@ -37,11 +43,11 @@ if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
 Register-ScheduledTask `
     -TaskName $taskName `
     -Action $action `
-    -Trigger $trigger `
+    -Trigger $triggers `
     -Settings $settings `
     -User $env:USERNAME `
     -RunLevel Limited `
-    -Description 'trend-digest daily ingest (Readwise -> LLM screen + summarize -> Notion -> Slack #ai-digest). Pattern B hidden.'
+    -Description 'trend-digest daily ingest (Readwise -> LLM screen + summarize -> Notion -> Slack #ai-digest). Pattern B hidden. Trigger: Daily 06:00 + AtLogOn (delay 5min) fallback.'
 
 Write-Host "[register] registered."
 Get-ScheduledTask -TaskName $taskName | Format-List TaskName, State, Author
