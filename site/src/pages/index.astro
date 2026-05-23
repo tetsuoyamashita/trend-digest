@@ -173,9 +173,24 @@ const buildTimeJST = new Intl.DateTimeFormat('ja-JP', {
         const row = document.querySelector('.row[data-id="' + CSS.escape(id) + '"]');
         return row ? row.getAttribute('data-default-important') === '1' : false;
       }
+      // Notion 同期 webhook (best-effort、no-cors で response 確認不可だが localStorage が真実)
+      const MARK_WEBHOOK = 'https://logosandpathos.app.n8n.cloud/webhook/trend-digest-mark';
+      function syncToNotion(id, value) {
+        if (!id) return;
+        try {
+          fetch(MARK_WEBHOOK, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ page_id: id, important: !!value }),
+            keepalive: true,
+          }).catch(() => {});
+        } catch (e) {}
+      }
       function setImportant(id, value) {
         importantMap[id] = !!value;
         saveImportant(importantMap);
+        syncToNotion(id, value);
       }
 
       let activePeriod = 'yesterday';
