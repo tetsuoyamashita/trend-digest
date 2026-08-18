@@ -32,9 +32,9 @@ Daily trend digest dashboard for personal use.
 ### 停止した内容
 | 対象 | 処置 |
 |---|---|
-| Task `trend-digest-daily` | Disable（定義残置。`Enable-ScheduledTask -TaskName trend-digest-daily` で再開可。XML backup = `_scripts/trend-digest-daily-task-backup.xml`） |
+| Task `trend-digest-daily` | 登録解除（完全削除）。再登録は `_scripts/trend-digest-daily-task-backup.xml`（XML backup）または `_scripts/register_daily_task.ps1` から |
 | n8n `wf-trend-digest-mark` | deactivate（設定残置・再 activate 可） |
 | GitHub Actions `build.yml` | daily cron（06:30 JST 保険再ビルド）を削除。`workflow_dispatch` / `repository_dispatch` は残置 |
 | Notion DB / ダッシュボード | **残置**（削除していない） |
 
-再開する場合は OpenAI 残高の補充が前提。
+※ OpenAI 残高は 2026-08-19 に補充済み（`mcp-openai` の疎通確認済）。廃止判断は残高ではなく利用実態に基づくため、再開を検討する場合は Stage2（詳細要約、コストの大半）を切って月 $5〜10 に落とす案から検討する。
