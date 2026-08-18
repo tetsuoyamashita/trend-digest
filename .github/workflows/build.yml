@@ -4,9 +4,7 @@ on:
   repository_dispatch:
     types: [rebuild]
   workflow_dispatch:
-  schedule:
-    # 念のため毎朝 06:30 JST (= 21:30 UTC) で再ビルド（n8n trigger fail 時の保険）
-    - cron: '30 21 * * *'
+  # 2026-08-19 廃止: daily ingest 停止に伴い schedule 再ビルドを削除（手動 workflow_dispatch のみ）
 
 permissions:
   contents: write

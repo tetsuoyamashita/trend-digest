@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-16"?>
+<Task version="1.3" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <RegistrationInfo>
+    <Description>trend-digest daily ingest (Readwise -&gt; LLM screen + summarize -&gt; Notion -&gt; Slack #ai-digest). Pattern B hidden. Trigger: Daily 06:00 + AtLogOn (delay 5min) fallback.</Description>
+    <URI>\trend-digest-daily</URI>
+  </RegistrationInfo>
+  <Principals>
+    <Principal id="Author">
+      <UserId>S-1-5-21-3825151653-1168186803-1756746637-1001</UserId>
+      <LogonType>InteractiveToken</LogonType>
+    </Principal>
+  </Principals>
+  <Settings>
+    <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+    <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
+    <ExecutionTimeLimit>PT2H</ExecutionTimeLimit>
+    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+    <RestartOnFailure>
+      <Count>1</Count>
+      <Interval>PT10M</Interval>
+    </RestartOnFailure>
+    <StartWhenAvailable>true</StartWhenAvailable>
+    <IdleSettings>
+      <Duration>PT10M</Duration>
+      <WaitTimeout>PT1H</WaitTimeout>
+      <StopOnIdleEnd>true</StopOnIdleEnd>
+      <RestartOnIdle>false</RestartOnIdle>
+    </IdleSettings>
+    <UseUnifiedSchedulingEngine>true</UseUnifiedSchedulingEngine>
+  </Settings>
+  <Triggers>
+    <CalendarTrigger>
+      <StartBoundary>2026-05-16T06:00:00+09:00</StartBoundary>
+      <ScheduleByDay>
+        <DaysInterval>1</DaysInterval>
+      </ScheduleByDay>
+    </CalendarTrigger>
+    <LogonTrigger>
+      <Delay>PT5M</Delay>
+      <UserId>TETSUO-PC\yamas</UserId>
+    </LogonTrigger>
+  </Triggers>
+  <Actions Context="Author">
+    <Exec>
+      <Command>wscript.exe</Command>
+      <Arguments>"C:\Users\yamas\.claude\scripts\run-hidden.vbs" "powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\yamas\.claude\scripts\dpapi_run.ps1" -EnvTemplate "C:\Users\yamas\ClaudeCode\trend-digest\_scripts\.env.template" pythonw "C:\Users\yamas\ClaudeCode\trend-digest\_scripts\daily_ingest.py""</Arguments>
+    </Exec>
+  </Actions>
+</Task>
